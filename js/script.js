@@ -225,6 +225,35 @@
 
     tabs.querySelectorAll(".b-tab").forEach((tab) => tab.classList.remove("active"));
     element.classList.add("active");
+
+    const bookingsPage = tabs.closest("#page-bookings");
+    if (!bookingsPage) {
+      return;
+    }
+
+    const selectedLabel = element.textContent.split("(")[0].trim().toLowerCase();
+    const cards = Array.from(bookingsPage.querySelectorAll(".bk-card"));
+    const emptyState = bookingsPage.querySelector("#booking-empty");
+
+    const matchesFilter = (card) => {
+      if (selectedLabel === "all") {
+        return true;
+      }
+
+      const statusPill = card.querySelector(".pill");
+      const statusText = statusPill ? statusPill.textContent.trim().toLowerCase() : "";
+      return statusText === selectedLabel;
+    };
+
+    const visibleCount = cards.reduce((count, card) => {
+      const shouldShow = matchesFilter(card);
+      card.style.display = shouldShow ? "flex" : "none";
+      return count + (shouldShow ? 1 : 0);
+    }, 0);
+
+    if (emptyState) {
+      emptyState.style.display = visibleCount === 0 ? "block" : "none";
+    }
   };
 
   window.activateSettingTab = function activateSettingTab(element) {

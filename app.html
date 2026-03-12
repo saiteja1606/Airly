@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Airly — Live Demo</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
 :root{
   --sky:#38BDF8;--sky-dark:#0369A1;--sky-mid:#075985;--sky-deep:#0C4A6E;--navy:#061F35;
@@ -319,6 +319,8 @@ body.app-menu-open{overflow:hidden;}
 .f-select{padding:9px 14px;border-radius:10px;border:1.5px solid var(--s200);font-size:13px;color:var(--s700);background:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;outline:none;}
 .bk-card{background:#fff;border:1px solid var(--s200);border-radius:16px;padding:18px 22px;margin-bottom:10px;display:flex;align-items:center;gap:18px;transition:all .2s;flex-wrap:wrap;}
 .bk-card:hover{box-shadow:0 6px 22px rgba(0,0,0,.08);}
+.booking-empty{display:none;text-align:center;padding:26px 20px;border:1px dashed var(--s300);border-radius:18px;background:var(--s50);color:var(--s500);font-size:13px;line-height:1.6;margin-top:10px;}
+.booking-empty strong{display:block;color:var(--s900);font-size:15px;margin-bottom:6px;}
 .bk-avatar{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;flex-shrink:0;}
 .bk-guest{font-size:14px;font-weight:700;color:var(--s900);}
 .bk-prop{font-size:12px;color:var(--s500);margin-top:2px;}
@@ -847,6 +849,7 @@ body.app-menu-open{overflow:hidden;}
   <div class="bk-card"><div class="bk-avatar" style="background:linear-gradient(135deg,#003580,#1a56a0)">S</div><div class="bk-info"><div class="bk-guest">Santosh & Family</div><div class="bk-prop">🏠 Hilltop Cottage Mapusa</div><div class="bk-dates">📅 Mar 26 → Mar 30 · 4 nights</div><span class="bk-source src-bc">🌐 Booking.com</span></div><div style="text-align:right"><div class="bk-amount">₹22,000</div><div class="bk-nights">4 nights</div><span class="pill pill-avail" style="margin-top:6px;display:block;">Upcoming</span></div><div class="bk-actions"><div class="icon-btn" onclick="showToast('👁 Booking details opened')">👁</div><div class="icon-btn" onclick="showToast('✏️ Edit booking opened')">✏️</div></div></div>
   <div class="bk-card"><div class="bk-avatar" style="background:linear-gradient(135deg,#6366F1,#4F46E5)">M</div><div class="bk-info"><div class="bk-guest">Meera Krishnan</div><div class="bk-prop">🏠 Sunset Villa Anjuna</div><div class="bk-dates">📅 Mar 8 → Mar 12 · 4 nights</div><span class="bk-source src-direct">✈ Direct</span></div><div style="text-align:right"><div class="bk-amount">₹16,800</div><div class="bk-nights">4 nights</div><span class="pill" style="background:var(--s100);color:var(--s500);margin-top:6px;display:block;">Completed</span></div><div class="bk-actions"><div class="icon-btn" onclick="showToast('👁 Booking details opened')">👁</div></div></div>
   <div class="bk-card"><div class="bk-avatar" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9)">R</div><div class="bk-info"><div class="bk-guest">Rohan Desai</div><div class="bk-prop">🏠 Beach Villa Calangute</div><div class="bk-dates">📅 Mar 18 → Mar 22 · 4 nights</div><span class="bk-source src-airbnb">🏠 Airbnb</span></div><div style="text-align:right"><div class="bk-amount">₹19,200</div><div class="bk-nights">4 nights</div><span class="pill pill-avail" style="margin-top:6px;display:block;">Upcoming</span></div><div class="bk-actions"><div class="icon-btn" onclick="showToast('👁 Booking details opened')">👁</div><div class="icon-btn" onclick="showToast('✏️ Edit booking opened')">✏️</div></div></div>
+  <div class="booking-empty" id="booking-empty"><strong>No bookings in this tab</strong>Try another filter or add a manual booking.</div>
 </div>
 
 <!-- ═══ CLEANING TASKS ═══ -->

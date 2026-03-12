@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="description" content="Airly — The only property management platform built for Indian Airbnb hosts. Automate cleaners, sync bookings, find nearby help."/>
 <title>Airly — Own it. Host it. Run it.</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
 :root{
   --sky:#38BDF8;--sky-dark:#0369A1;--sky-mid:#075985;--sky-deep:#0C4A6E;--navy:#061F35;
@@ -164,7 +164,7 @@ section{padding:110px 5%;position:relative;overflow:hidden;}
 .pricing{background:#030A15;}
 .pricing::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(56,189,248,.3),transparent);}
 .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:980px;margin:0 auto;}
-.price-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.09);border-radius:28px;padding:40px;position:relative;transition:all .3s;}
+.price-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.09);border-radius:28px;padding:40px;position:relative;transition:all .3s;display:flex;flex-direction:column;min-height:100%;}
 .price-card:hover{transform:translateY(-4px);}
 .price-card.featured{background:linear-gradient(160deg,rgba(3,105,161,.22),rgba(7,89,133,.12));border-color:rgba(56,189,248,.35);transform:scale(1.04);box-shadow:0 0 60px rgba(56,189,248,.1);}
 .price-card.featured:hover{transform:scale(1.04) translateY(-4px);}
@@ -180,7 +180,7 @@ section{padding:110px 5%;position:relative;overflow:hidden;}
 .price-feats li:last-child{border-bottom:none;}
 .chk{color:var(--green);font-size:12px;flex-shrink:0;}
 .cross{color:var(--s500);font-size:12px;flex-shrink:0;}
-.price-btn{width:100%;padding:14px;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;transition:all .25s;font-family:'DM Sans',sans-serif;border:none;letter-spacing:.2px;}
+.price-btn{width:100%;padding:14px;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;transition:all .25s;font-family:'DM Sans',sans-serif;border:none;letter-spacing:.2px;margin-top:auto;}
 .price-btn-outline{background:transparent;border:1.5px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);}
 .price-btn-outline:hover{border-color:rgba(255,255,255,.35);color:#fff;}
 .price-btn-fill{background:linear-gradient(135deg,var(--sky-dark),var(--sky));color:#fff;box-shadow:0 8px 24px rgba(3,105,161,.4);}
@@ -275,8 +275,17 @@ footer{background:#030810;border-top:1px solid rgba(255,255,255,.06);padding:60p
   .feat-grid{grid-template-columns:1fr;}
   .how-grid{grid-template-columns:1fr 1fr;}
   .how-grid::before{display:none;}
-  .price-grid{grid-template-columns:1fr;}
-  .price-card,.price-card.featured{transform:none;padding:32px 24px;}
+  .price-grid{grid-template-columns:1fr;gap:18px;max-width:560px;}
+  .price-card,.price-card.featured{transform:none;padding:28px 22px;border-radius:24px;}
+  .price-card.featured{order:-1;box-shadow:0 18px 42px rgba(3,105,161,.2);}
+  .price-badge{top:14px;left:auto;right:18px;transform:none;font-size:9px;letter-spacing:1.6px;padding:5px 12px;}
+  .price-plan{margin-bottom:12px;padding-right:104px;}
+  .price-amount{font-size:46px;}
+  .price-amount sup{font-size:20px;}
+  .price-amount sub{display:block;margin-top:8px;font-size:13px;}
+  .price-desc{margin-bottom:22px;font-size:13px;}
+  .price-feats{margin-bottom:24px;}
+  .price-feats li{padding:10px 0;font-size:13px;line-height:1.45;}
   .testi-grid{grid-template-columns:1fr;}
   .wl-row{grid-template-columns:1fr;}
   .nearby-text .sec-label,.nearby-text .sec-title{text-align:center;}
@@ -300,7 +309,18 @@ footer{background:#030810;border-top:1px solid rgba(255,255,255,.06);padding:60p
   .how-step{padding:0;}
   .sec-title{font-size:clamp(28px,9vw,38px);}
   .sec-sub{font-size:15px;margin-bottom:48px;}
-  .feat-card,.testi-card,.map-card,.price-card,.wl-success{padding:24px 18px;}
+  .feat-card,.testi-card,.map-card,.wl-success{padding:24px 18px;}
+  .price-grid{gap:16px;}
+  .price-card,.price-card.featured{padding:24px 18px;border-radius:22px;}
+  .price-badge{position:static;display:inline-flex;align-self:flex-start;margin-bottom:14px;}
+  .price-plan{padding-right:0;margin-bottom:10px;}
+  .price-amount{font-size:40px;}
+  .price-amount sub{margin-top:6px;font-size:12px;}
+  .price-desc{font-size:12px;margin-bottom:18px;}
+  .price-divider{margin-bottom:18px;}
+  .price-feats{margin-bottom:20px;}
+  .price-feats li{font-size:12px;padding:9px 0;}
+  .price-btn{padding:13px;border-radius:13px;font-size:13px;}
   .map-placeholder{height:220px;}
   .wl-title{font-size:34px;}
   .wl-sub{font-size:15px;margin-bottom:30px;}
