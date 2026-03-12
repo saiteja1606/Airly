@@ -1,6 +1,11 @@
 (function () {
   const loaderMessage = document.getElementById("ld-msg");
   const loader = document.getElementById("loader");
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-R9RPC8VLFR');
 
   if (loaderMessage && loader) {
     const hasNavbar = !!document.getElementById("navbar");
@@ -365,3 +370,4 @@
     window.goTo(hash, null);
   }
 })();
+
