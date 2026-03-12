@@ -1,0 +1,681 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Airly — The only property management platform built for Indian Airbnb hosts. Automate cleaners, sync bookings, find nearby help."/>
+<title>Airly — Own it. Host it. Run it.</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --sky:#38BDF8;--sky-dark:#0369A1;--sky-mid:#075985;--sky-deep:#0C4A6E;--navy:#061F35;
+  --orange:#F97316;--orange-dark:#EA580C;--amber:#FBBF24;
+  --green:#10B981;--red:#EF4444;--purple:#8B5CF6;
+  --s50:#F8FAFC;--s100:#F1F5F9;--s200:#E2E8F0;--s300:#CBD5E1;
+  --s400:#94A3B8;--s500:#64748B;--s700:#334155;--s900:#0F172A;
+  --white:#fff;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--white);overflow-x:hidden;}
+
+/* ── LOADER ── */
+#loader{position:fixed;inset:0;z-index:9999;background:linear-gradient(160deg,#040E1A 0%,#0C4A6E 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s ease,visibility .8s ease;}
+#loader.hide{opacity:0;visibility:hidden;pointer-events:none;}
+.ld-city{position:absolute;bottom:0;left:0;right:0;height:200px;opacity:.15;}
+.ld-city svg{width:100%;height:100%;}
+.ld-plane{position:absolute;animation:lp-fly 2.8s cubic-bezier(.25,.46,.45,.94) infinite;}
+@keyframes lp-fly{0%{bottom:70px;left:calc(50% - 10px);transform:rotate(-42deg) scale(.5);opacity:0;}30%{opacity:1;}70%{bottom:52vh;left:calc(50% + 100px);transform:rotate(-18deg) scale(1);}100%{bottom:82vh;left:calc(50% + 320px);transform:rotate(-5deg) scale(.65);opacity:0;}}
+.ld-logo{font-family:'Syne',sans-serif;font-size:56px;font-weight:800;color:#fff;letter-spacing:-2px;position:relative;z-index:1;}
+.ld-logo span{color:var(--orange);}
+.ld-sub{font-size:12px;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,.35);margin:8px 0 36px;position:relative;z-index:1;}
+.ld-bar-wrap{width:220px;height:2px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;position:relative;z-index:1;}
+.ld-bar{height:100%;background:linear-gradient(90deg,var(--sky),var(--orange));width:0;animation:ld-prog 2.2s ease forwards;border-radius:2px;}
+@keyframes ld-prog{0%{width:0;}60%{width:72%;}90%{width:92%;}100%{width:100%;}}
+.ld-msg{font-size:12px;color:rgba(255,255,255,.3);margin-top:14px;letter-spacing:.5px;position:relative;z-index:1;}
+
+/* ── NAVBAR ── */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:500;padding:0 5%;height:66px;display:flex;align-items:center;justify-content:space-between;background:rgba(2,10,22,.94);backdrop-filter:blur(24px);border-bottom:1px solid rgba(56,189,248,.18);box-shadow:0 10px 32px rgba(0,0,0,.22);transition:all .3s;}
+.navbar.scrolled{background:rgba(1,8,18,.98);border-bottom-color:rgba(56,189,248,.24);}
+.nav-logo{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px;display:flex;align-items:center;gap:9px;text-decoration:none;}
+.nav-logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--sky),var(--sky-dark));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.nav-links{display:flex;align-items:center;gap:6px;}
+.nav-links a{padding:8px 16px;border-radius:10px;font-size:13px;font-weight:600;color:rgba(255,255,255,.9);text-decoration:none;transition:all .2s;}
+.nav-links a:hover{color:#fff;background:rgba(255,255,255,.1);}
+.nav-cta{background:var(--orange)!important;color:#fff!important;font-weight:700!important;padding:10px 22px!important;border-radius:12px!important;box-shadow:0 4px 16px rgba(249,115,22,.35);}
+.nav-cta:hover{background:var(--orange-dark)!important;transform:translateY(-1px);}
+.nav-demo-btn{background:rgba(56,189,248,.16)!important;color:#d9f4ff!important;border:1px solid rgba(56,189,248,.36)!important;font-weight:700!important;}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:10px;border-radius:12px;border:1px solid rgba(56,189,248,.32);background:rgba(56,189,248,.12);box-shadow:0 8px 20px rgba(0,0,0,.16);transition:all .25s;}
+.hamburger:hover{background:rgba(56,189,248,.18);border-color:rgba(125,211,252,.55);}
+.hamburger span{display:block;width:24px;height:2px;background:#fff;border-radius:2px;transition:transform .3s ease,opacity .2s ease;}
+.hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.active span:nth-child(2){opacity:0;}
+.hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mobile-menu{display:none;position:fixed;inset:66px 0 0 0;background:rgba(4,14,26,.98);z-index:499;padding:24px 5%;flex-direction:column;gap:4px;overflow-y:auto;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{display:block;padding:14px 16px;border-radius:12px;color:rgba(255,255,255,.92);text-decoration:none;font-size:15px;font-weight:600;}
+.mobile-menu a:hover{background:rgba(255,255,255,.08);color:#fff;}
+body.menu-open{overflow:hidden;}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;
+  background:linear-gradient(160deg,#040E1A 0%,#083254 55%,#061F35 100%);}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(56,189,248,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,.04) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,#000 40%,transparent 100%);}
+.hero-glow{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 75% 40%,rgba(249,115,22,.09),transparent 65%),radial-gradient(ellipse 50% 60% at 20% 60%,rgba(56,189,248,.1),transparent 60%);}
+.hero-stars{position:absolute;inset:0;background-image:radial-gradient(1px 1px at 10% 15%,rgba(255,255,255,.6) 0%,transparent 100%),radial-gradient(1.5px 1.5px at 25% 55%,rgba(255,255,255,.4) 0%,transparent 100%),radial-gradient(1px 1px at 42% 10%,rgba(255,255,255,.65) 0%,transparent 100%),radial-gradient(1px 1px at 58% 75%,rgba(255,255,255,.3) 0%,transparent 100%),radial-gradient(1.5px 1.5px at 68% 25%,rgba(255,255,255,.5) 0%,transparent 100%),radial-gradient(1px 1px at 80% 60%,rgba(255,255,255,.4) 0%,transparent 100%),radial-gradient(1px 1px at 90% 12%,rgba(255,255,255,.55) 0%,transparent 100%),radial-gradient(1.5px 1.5px at 95% 48%,rgba(255,255,255,.35) 0%,transparent 100%);}
+.city-bg{position:absolute;bottom:0;left:0;right:0;pointer-events:none;opacity:.1;}
+.city-bg svg{width:100%;display:block;}
+.hero-plane{position:absolute;z-index:3;animation:hp-fly 20s linear infinite;pointer-events:none;filter:drop-shadow(0 0 12px rgba(56,189,248,.5));}
+@keyframes hp-fly{0%{left:-80px;top:28%;opacity:0;transform:rotate(-5deg) scale(.7);}6%{opacity:1;}45%{top:22%;transform:rotate(-3deg) scale(1);}90%{opacity:.7;}100%{left:calc(100% + 80px);top:32%;opacity:0;transform:rotate(-6deg) scale(.6);}}
+.hero-plane2{position:absolute;z-index:2;animation:hp-fly2 30s linear 10s infinite;pointer-events:none;filter:drop-shadow(0 0 6px rgba(56,189,248,.3));opacity:.4;}
+@keyframes hp-fly2{0%{left:-60px;top:13%;opacity:0;transform:rotate(-3deg) scale(.45);}8%{opacity:.4;}92%{opacity:.25;}100%{left:calc(100% + 60px);top:18%;opacity:0;transform:rotate(-5deg) scale(.35);}}
+.horizon{position:absolute;bottom:0;left:0;right:0;height:140px;background:linear-gradient(to top,rgba(3,105,161,.18),transparent);z-index:1;}
+.hero-content{position:relative;z-index:4;text-align:center;max-width:860px;padding:120px 24px 80px;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.25);padding:7px 20px;border-radius:100px;margin-bottom:32px;font-size:11px;color:var(--sky);font-weight:700;letter-spacing:2px;text-transform:uppercase;animation:fadeUp .6s ease .2s both;}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--orange);animation:pdot 2s ease-in-out infinite;}
+@keyframes pdot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.6);}}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(44px,7vw,90px);font-weight:800;line-height:.95;letter-spacing:-4px;color:#fff;margin-bottom:14px;animation:fadeUp .7s ease .35s both;}
+.hero h1 .accent{color:var(--orange);position:relative;display:inline-block;}
+.hero h1 .accent::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--orange),transparent);border-radius:2px;}
+.hero-tagline{font-size:12px;letter-spacing:6px;font-weight:600;color:rgba(255,255,255,.3);margin-bottom:26px;text-transform:uppercase;animation:fadeUp .7s ease .45s both;}
+.hero p{font-size:18px;color:rgba(255,255,255,.6);line-height:1.75;margin-bottom:48px;font-weight:300;max-width:600px;margin-left:auto;margin-right:auto;animation:fadeUp .7s ease .55s both;}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:72px;animation:fadeUp .7s ease .65s both;}
+.btn-primary{background:linear-gradient(135deg,var(--orange),var(--orange-dark));color:#fff;padding:16px 36px;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;box-shadow:0 8px 28px rgba(249,115,22,.4);letter-spacing:.2px;transition:all .25s;text-decoration:none;display:inline-flex;align-items:center;gap:8px;}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(249,115,22,.5);}
+.btn-ghost{background:rgba(255,255,255,.06);color:rgba(255,255,255,.85);padding:16px 36px;border-radius:14px;font-size:15px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,.15);font-family:'DM Sans',sans-serif;transition:all .25s;text-decoration:none;display:inline-flex;align-items:center;gap:8px;backdrop-filter:blur(8px);}
+.btn-ghost:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.3);transform:translateY(-2px);}
+.hero-stats{display:flex;gap:52px;justify-content:center;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.07);padding-top:48px;animation:fadeUp .7s ease .75s both;}
+.hs-num{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:#fff;line-height:1;}
+.hs-num em{font-style:normal;color:var(--orange);}
+.hs-lbl{font-size:11px;color:rgba(255,255,255,.35);margin-top:5px;letter-spacing:2px;text-transform:uppercase;}
+
+/* ── EARLY BIRD BANNER ── */
+.eb-banner{background:linear-gradient(135deg,rgba(249,115,22,.15),rgba(249,115,22,.08));border-top:1px solid rgba(249,115,22,.2);border-bottom:1px solid rgba(249,115,22,.2);padding:14px 5%;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;}
+.eb-badge{background:var(--orange);color:#fff;font-size:10px;font-weight:800;letter-spacing:2px;padding:4px 12px;border-radius:100px;text-transform:uppercase;flex-shrink:0;}
+.eb-text{font-size:14px;color:rgba(255,255,255,.8);}
+.eb-text strong{color:#fff;}
+.eb-count{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--orange);}
+.eb-sub{font-size:12px;color:rgba(255,255,255,.4);}
+
+/* ── SECTION BASE ── */
+section{padding:110px 5%;position:relative;overflow:hidden;}
+.sec-label{font-size:11px;letter-spacing:5px;text-transform:uppercase;font-weight:700;color:var(--orange);margin-bottom:14px;text-align:center;}
+.sec-title{font-family:'Syne',sans-serif;font-size:clamp(32px,4.5vw,54px);font-weight:800;letter-spacing:-2px;color:#fff;text-align:center;margin-bottom:16px;line-height:1.05;}
+.sec-sub{font-size:16px;color:var(--s400);text-align:center;max-width:540px;margin:0 auto 72px;line-height:1.7;font-weight:300;}
+
+/* ── FEATURES ── */
+.features{background:#040C18;}
+.features::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(56,189,248,.3),transparent);}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1160px;margin:0 auto;}
+.feat-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:24px;padding:36px 30px;transition:all .35s;cursor:default;position:relative;overflow:hidden;}
+.feat-card::after{content:'';position:absolute;inset:0;border-radius:24px;background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(56,189,248,.06),transparent);opacity:0;transition:opacity .35s;}
+.feat-card:hover{background:rgba(255,255,255,.055);transform:translateY(-6px);border-color:rgba(56,189,248,.2);box-shadow:0 24px 64px rgba(0,0,0,.4);}
+.feat-card:hover::after{opacity:1;}
+.feat-icon{width:58px;height:58px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:24px;}
+.feat-card h3{font-family:'Syne',sans-serif;font-size:19px;font-weight:700;color:#fff;margin-bottom:12px;}
+.feat-card p{font-size:14px;color:rgba(255,255,255,.45);line-height:1.7;font-weight:300;}
+.feat-tag{display:inline-block;margin-top:16px;font-size:11px;font-weight:700;padding:4px 12px;border-radius:100px;letter-spacing:.5px;}
+
+/* ── HOW IT WORKS ── */
+.how{background:#030A15;}
+.how::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(249,115,22,.3),transparent);}
+.how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;max-width:1000px;margin:0 auto;position:relative;}
+.how-grid::before{content:'';position:absolute;top:46px;left:15%;right:15%;height:1px;background:linear-gradient(90deg,var(--orange),var(--sky),var(--orange));opacity:.25;z-index:0;}
+.how-step{text-align:center;padding:0 20px;position:relative;z-index:1;}
+.how-num{width:90px;height:90px;border-radius:50%;margin:0 auto 20px;border:1px solid rgba(56,189,248,.2);display:flex;align-items:center;justify-content:center;background:rgba(3,10,21,.95);font-size:30px;position:relative;}
+.how-num::after{content:'';position:absolute;inset:-5px;border-radius:50%;background:conic-gradient(rgba(56,189,248,.3) 0deg,transparent 90deg);opacity:.4;animation:spin 8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.how-step h4{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:8px;}
+.how-step p{font-size:13px;color:rgba(255,255,255,.4);line-height:1.6;}
+
+/* ── NEARBY CLEANERS FEATURE HIGHLIGHT ── */
+.nearby{background:#040C18;}
+.nearby::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(56,189,248,.3),transparent);}
+.nearby-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.nearby-text .sec-label,.nearby-text .sec-title{text-align:left;}
+.nearby-text .sec-title{margin-bottom:20px;}
+.nearby-text p{font-size:16px;color:rgba(255,255,255,.55);line-height:1.8;font-weight:300;margin-bottom:32px;}
+.nearby-bullets{list-style:none;display:flex;flex-direction:column;gap:16px;margin-bottom:36px;}
+.nearby-bullets li{display:flex;align-items:flex-start;gap:14px;}
+.nb-icon{width:40px;height:40px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.nb-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:3px;}
+.nb-desc{font-size:13px;color:rgba(255,255,255,.45);line-height:1.5;}
+.nearby-visual{position:relative;}
+.map-card{background:rgba(255,255,255,.04);border:1px solid rgba(56,189,248,.15);border-radius:24px;padding:24px;overflow:hidden;position:relative;}
+.map-placeholder{height:260px;background:linear-gradient(160deg,#0B2240,#0E3258);border-radius:16px;position:relative;overflow:hidden;margin-bottom:20px;}
+.map-grid-lines{position:absolute;inset:0;background-image:linear-gradient(rgba(56,189,248,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,.08) 1px,transparent 1px);background-size:32px 32px;}
+.map-pin{position:absolute;display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:transform .2s;}
+.map-pin:hover{transform:scale(1.15);}
+.map-pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid #fff;}
+.map-pin-label{background:rgba(0,0,0,.8);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;margin-top:4px;white-space:nowrap;}
+.map-you{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
+.map-you-dot{width:18px;height:18px;border-radius:50%;background:var(--orange);border:3px solid #fff;box-shadow:0 0 0 6px rgba(249,115,22,.2);}
+.map-you-label{background:var(--orange);color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:6px;margin-top:4px;white-space:nowrap;}
+.cleaner-list{display:flex;flex-direction:column;gap:10px;}
+.cleaner-row{display:flex;align-items:center;gap:12px;padding:10px 12px;background:rgba(255,255,255,.04);border-radius:12px;border:1px solid rgba(255,255,255,.07);}
+.cl-avatar{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff;flex-shrink:0;}
+.cl-name{font-size:13px;font-weight:700;color:#fff;}
+.cl-meta{font-size:11px;color:rgba(255,255,255,.4);}
+.cl-badge{margin-left:auto;font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;}
+.cl-badge.avail{background:rgba(16,185,129,.12);color:var(--green);}
+.cl-badge.busy{background:rgba(245,158,11,.12);color:var(--amber);}
+
+/* ── PRICING ── */
+.pricing{background:#030A15;}
+.pricing::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(56,189,248,.3),transparent);}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:980px;margin:0 auto;}
+.price-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.09);border-radius:28px;padding:40px;position:relative;transition:all .3s;}
+.price-card:hover{transform:translateY(-4px);}
+.price-card.featured{background:linear-gradient(160deg,rgba(3,105,161,.22),rgba(7,89,133,.12));border-color:rgba(56,189,248,.35);transform:scale(1.04);box-shadow:0 0 60px rgba(56,189,248,.1);}
+.price-card.featured:hover{transform:scale(1.04) translateY(-4px);}
+.price-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,var(--orange),var(--orange-dark));color:#fff;padding:5px 18px;border-radius:100px;font-size:10px;font-weight:800;letter-spacing:2px;white-space:nowrap;box-shadow:0 4px 16px rgba(249,115,22,.4);}
+.price-plan{font-size:11px;letter-spacing:3px;color:var(--s400);text-transform:uppercase;margin-bottom:14px;font-weight:700;}
+.price-amount{font-family:'Syne',sans-serif;font-size:54px;font-weight:800;color:#fff;line-height:1;margin-bottom:6px;}
+.price-amount sup{font-size:24px;vertical-align:super;color:var(--s400);}
+.price-amount sub{font-size:16px;color:var(--s400);font-weight:400;}
+.price-desc{font-size:13px;color:var(--s400);margin-bottom:28px;line-height:1.5;}
+.price-divider{height:1px;background:rgba(255,255,255,.07);margin-bottom:22px;}
+.price-feats{list-style:none;margin-bottom:32px;}
+.price-feats li{font-size:13px;color:rgba(255,255,255,.65);padding:8px 0;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.05);}
+.price-feats li:last-child{border-bottom:none;}
+.chk{color:var(--green);font-size:12px;flex-shrink:0;}
+.cross{color:var(--s500);font-size:12px;flex-shrink:0;}
+.price-btn{width:100%;padding:14px;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;transition:all .25s;font-family:'DM Sans',sans-serif;border:none;letter-spacing:.2px;}
+.price-btn-outline{background:transparent;border:1.5px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);}
+.price-btn-outline:hover{border-color:rgba(255,255,255,.35);color:#fff;}
+.price-btn-fill{background:linear-gradient(135deg,var(--sky-dark),var(--sky));color:#fff;box-shadow:0 8px 24px rgba(3,105,161,.4);}
+.price-btn-fill:hover{box-shadow:0 12px 32px rgba(3,105,161,.55);transform:translateY(-1px);}
+
+/* ── WAITLIST ── */
+.waitlist{background:linear-gradient(160deg,#061F35,#0C4A6E);position:relative;overflow:hidden;}
+.waitlist::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(249,115,22,.08),transparent 65%);}
+.wl-inner{max-width:640px;margin:0 auto;text-align:center;position:relative;z-index:1;}
+.wl-icon{font-size:52px;margin-bottom:20px;}
+.wl-title{font-family:'Syne',sans-serif;font-size:clamp(32px,5vw,52px);font-weight:800;letter-spacing:-2px;color:#fff;margin-bottom:16px;}
+.wl-sub{font-size:16px;color:rgba(255,255,255,.55);margin-bottom:44px;line-height:1.7;font-weight:300;}
+.wl-form{display:flex;flex-direction:column;gap:14px;margin-bottom:28px;}
+.wl-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.wl-input{padding:15px 18px;border-radius:14px;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:#fff;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:all .2s;width:100%;}
+.wl-input:focus{border-color:var(--sky);background:rgba(255,255,255,.1);box-shadow:0 0 0 4px rgba(56,189,248,.1);}
+.wl-input::placeholder{color:rgba(255,255,255,.3);}
+.wl-select{padding:15px 18px;border-radius:14px;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:rgba(255,255,255,.88);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;width:100%;appearance:none;}
+.wl-select option{color:var(--s900);background:#fff;}
+.wl-submit{background:linear-gradient(135deg,var(--orange),var(--orange-dark));color:#fff;padding:18px;border-radius:14px;font-size:16px;font-weight:700;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 8px 28px rgba(249,115,22,.4);transition:all .25s;letter-spacing:.2px;}
+.wl-submit:hover{transform:translateY(-3px);box-shadow:0 16px 44px rgba(249,115,22,.55);}
+.wl-trust{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;}
+.wl-trust-item{display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,.4);}
+.wl-success{display:none;text-align:center;padding:32px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);border-radius:20px;}
+.wl-success h3{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:#fff;margin-bottom:8px;}
+.wl-success p{font-size:14px;color:rgba(255,255,255,.6);}
+
+/* ── TESTIMONIALS ── */
+.testi{background:#040C18;}
+.testi::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(249,115,22,.25),transparent);}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1100px;margin:0 auto;}
+.testi-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:22px;padding:30px;transition:all .3s;}
+.testi-card:hover{transform:translateY(-4px);border-color:rgba(56,189,248,.18);}
+.testi-stars{color:var(--amber);font-size:16px;margin-bottom:16px;letter-spacing:2px;}
+.testi-text{font-size:15px;color:rgba(255,255,255,.7);line-height:1.7;margin-bottom:20px;font-weight:300;font-style:italic;}
+.testi-author{display:flex;align-items:center;gap:12px;}
+.testi-avatar{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;flex-shrink:0;}
+.testi-name{font-size:14px;font-weight:700;color:#fff;}
+.testi-detail{font-size:12px;color:rgba(255,255,255,.4);margin-top:2px;}
+
+/* ── FOOTER ── */
+footer{background:#030810;border-top:1px solid rgba(255,255,255,.06);padding:60px 5% 40px;}
+.footer-inner{max-width:1100px;margin:0 auto;}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px;}
+.footer-brand .nav-logo{margin-bottom:16px;display:inline-flex;}
+.footer-brand p{font-size:13px;color:rgba(255,255,255,.4);line-height:1.7;max-width:280px;margin-bottom:20px;}
+.footer-social{display:flex;gap:10px;}
+.social-btn{width:38px;height:38px;border-radius:10px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:16px;}
+.social-btn:hover{border-color:var(--sky);background:rgba(56,189,248,.08);}
+.footer-col h4{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:16px;letter-spacing:.5px;}
+.footer-col a{display:block;font-size:13px;color:rgba(255,255,255,.4);text-decoration:none;margin-bottom:10px;transition:color .2s;cursor:pointer;}
+.footer-col a:hover{color:rgba(255,255,255,.8);}
+.footer-bottom{display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(255,255,255,.06);padding-top:28px;flex-wrap:wrap;gap:12px;}
+.footer-copy{font-size:12px;color:rgba(255,255,255,.3);}
+.footer-badges{display:flex;gap:10px;flex-wrap:wrap;}
+.footer-badge{font-size:11px;color:rgba(255,255,255,.3);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);padding:4px 12px;border-radius:100px;}
+
+/* ── WHATSAPP FLOAT ── */
+.wa-float{position:fixed;bottom:24px;right:24px;z-index:400;display:flex;flex-direction:column;align-items:flex-end;gap:10px;}
+.wa-tooltip{background:#fff;color:var(--s900);font-size:13px;font-weight:600;padding:10px 16px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.2);white-space:nowrap;animation:wa-pop .3s ease;transform-origin:bottom right;}
+@keyframes wa-pop{from{opacity:0;transform:scale(.8);}to{opacity:1;transform:scale(1);}}
+.wa-btn{width:58px;height:58px;border-radius:18px;background:linear-gradient(135deg,#25D366,#128C7E);display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;box-shadow:0 8px 24px rgba(37,211,102,.4);transition:all .25s;border:none;animation:wa-bounce 3s ease-in-out 3s infinite;}
+.wa-btn:hover{transform:scale(1.1);box-shadow:0 12px 32px rgba(37,211,102,.55);}
+@keyframes wa-bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+
+/* ── SCROLL REVEAL ── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* ── UTILS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  .feat-grid{grid-template-columns:1fr 1fr;}
+  .nearby-inner{grid-template-columns:1fr;gap:40px;}
+  .footer-top{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:900px){
+  .navbar{padding:0 20px;height:62px;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .mobile-menu{inset:62px 0 0 0;padding:20px;}
+}
+@media(max-width:768px){
+  .hero{min-height:auto;padding-top:62px;}
+  .hero-content{padding:104px 20px 64px;}
+  .hero h1{letter-spacing:-2px;}
+  .hero p{font-size:16px;line-height:1.65;}
+  .hero-stats{gap:32px;padding-top:36px;}
+  .hero-plane,.hero-plane2{display:none;}
+  .feat-grid{grid-template-columns:1fr;}
+  .how-grid{grid-template-columns:1fr 1fr;}
+  .how-grid::before{display:none;}
+  .price-grid{grid-template-columns:1fr;}
+  .price-card,.price-card.featured{transform:none;padding:32px 24px;}
+  .testi-grid{grid-template-columns:1fr;}
+  .wl-row{grid-template-columns:1fr;}
+  .nearby-text .sec-label,.nearby-text .sec-title{text-align:center;}
+  .nearby-text p{text-align:center;}
+  .nearby-bullets{margin-bottom:28px;}
+  .footer-top{grid-template-columns:1fr;gap:32px;}
+  .footer-bottom{flex-direction:column;text-align:center;}
+  .footer-brand p{max-width:none;}
+  .eb-banner{padding:14px 20px;}
+  section{padding:80px 20px;}
+}
+@media(max-width:480px){
+  .hero-content{padding:92px 16px 52px;}
+  .hero h1{font-size:clamp(36px,12vw,52px);line-height:1;}
+  .hero-tagline{letter-spacing:4px;font-size:10px;}
+  .hero-btns{flex-direction:column;align-items:stretch;margin-bottom:48px;}
+  .btn-primary,.btn-ghost{width:100%;justify-content:center;padding:15px 20px;}
+  .hero-stats{gap:24px;justify-content:flex-start;}
+  .hs-num{font-size:30px;}
+  .how-grid{grid-template-columns:1fr;}
+  .how-step{padding:0;}
+  .sec-title{font-size:clamp(28px,9vw,38px);}
+  .sec-sub{font-size:15px;margin-bottom:48px;}
+  .feat-card,.testi-card,.map-card,.price-card,.wl-success{padding:24px 18px;}
+  .map-placeholder{height:220px;}
+  .wl-title{font-size:34px;}
+  .wl-sub{font-size:15px;margin-bottom:30px;}
+  .wl-input,.wl-select,.wl-submit{padding:14px 16px;}
+  .footer-badges{justify-content:center;}
+  .wa-float{right:16px;bottom:16px;}
+  .wa-tooltip{max-width:220px;white-space:normal;text-align:right;}
+  .wa-btn{width:52px;height:52px;font-size:24px;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="ld-city">
+    <svg viewBox="0 0 1440 200" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <g fill="rgba(56,189,248,.7)">
+        <rect x="20" y="80" width="48" height="120"/><rect x="25" y="60" width="38" height="20"/>
+        <rect x="80" y="110" width="55" height="90"/><rect x="145" y="50" width="46" height="150"/>
+        <rect x="148" y="30" width="40" height="20"/><rect x="167" y="12" width="4" height="18"/>
+        <rect x="200" y="100" width="50" height="100"/><rect x="260" y="65" width="65" height="135"/>
+        <rect x="263" y="45" width="59" height="20"/><rect x="335" y="40" width="50" height="160"/>
+        <rect x="338" y="20" width="44" height="20"/><rect x="359" y="4" width="4" height="16"/>
+        <rect x="395" y="115" width="44" height="85"/><rect x="449" y="70" width="56" height="130"/>
+        <rect x="452" y="50" width="50" height="20"/><rect x="515" y="90" width="48" height="110"/>
+        <rect x="573" y="38" width="56" height="162"/><rect x="576" y="18" width="50" height="20"/>
+        <rect x="601" y="2" width="4" height="16"/><rect x="639" y="105" width="44" height="95"/>
+        <rect x="693" y="62" width="62" height="138"/><rect x="696" y="42" width="56" height="20"/>
+        <rect x="765" y="82" width="48" height="118"/><rect x="823" y="46" width="54" height="154"/>
+        <rect x="826" y="26" width="48" height="20"/><rect x="849" y="8" width="4" height="18"/>
+        <rect x="887" y="118" width="46" height="82"/><rect x="943" y="66" width="58" height="134"/>
+        <rect x="946" y="46" width="52" height="20"/><rect x="1011" y="86" width="48" height="114"/>
+        <rect x="1069" y="42" width="54" height="158"/><rect x="1072" y="22" width="48" height="20"/>
+        <rect x="1095" y="6" width="4" height="16"/><rect x="1133" y="108" width="44" height="92"/>
+        <rect x="1187" y="58" width="62" height="142"/><rect x="1190" y="38" width="56" height="20"/>
+        <rect x="1259" y="78" width="48" height="122"/><rect x="1317" y="48" width="56" height="152"/>
+        <rect x="1320" y="28" width="50" height="20"/><rect x="1384" y="98" width="56" height="102"/>
+        <g fill="rgba(249,115,22,.6)" opacity=".8">
+          <rect x="153" y="60" width="5" height="5"/><rect x="165" y="60" width="5" height="5"/>
+          <rect x="343" y="50" width="5" height="5"/><rect x="355" y="50" width="5" height="5"/>
+          <rect x="580" y="48" width="5" height="5"/><rect x="592" y="48" width="5" height="5"/>
+          <rect x="828" y="56" width="5" height="5"/><rect x="840" y="56" width="5" height="5"/>
+          <rect x="1074" y="52" width="5" height="5"/><rect x="1086" y="52" width="5" height="5"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+  <div class="ld-plane">
+    <svg width="38" height="38" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 0 12px rgba(56,189,248,.7))">
+      <path d="M28 6 L34 22 L50 20 L50 26 L34 30 L31 42 L37 44 L37 48 L28 45 L19 48 L19 44 L25 42 L22 30 L6 26 L6 20 L22 22 Z" fill="#38BDF8"/>
+      <ellipse cx="28" cy="20" rx="4" ry="3" fill="#F97316"/>
+    </svg>
+  </div>
+  <div class="ld-logo">Air<span>ly</span></div>
+  <div class="ld-sub">Own it · Host it · Run it</div>
+  <div class="ld-bar-wrap"><div class="ld-bar"></div></div>
+  <div class="ld-msg" id="ld-msg">Loading your experience...</div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <a href="#" class="nav-logo"><div class="nav-logo-icon">✈</div>Airly</a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#nearby">Find Cleaners</a>
+    <a href="#pricing">Pricing</a>
+    <a href="app.html" class="nav-demo-btn">Live Demo →</a>
+    <a href="#waitlist" class="nav-cta">Join Waitlist ✈</a>
+  </div>
+  <button class="hamburger" id="hamburger" type="button" aria-label="Open navigation menu" aria-controls="mobile-menu" aria-expanded="false" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+  <a href="#features" onclick="toggleMenu()">Features</a>
+  <a href="#nearby" onclick="toggleMenu()">Find Cleaners</a>
+  <a href="#pricing" onclick="toggleMenu()">Pricing</a>
+  <a href="app.html" onclick="toggleMenu()" style="color:var(--sky)!important">Live Demo →</a>
+  <a href="#waitlist" onclick="toggleMenu()" style="background:var(--orange);color:#fff!important;font-weight:700;border-radius:12px;margin-top:8px;">Join Waitlist ✈</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-grid"></div><div class="hero-glow"></div><div class="hero-stars"></div>
+  <div class="city-bg">
+    <svg viewBox="0 0 1440 260" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <g fill="rgba(56,189,248,.9)">
+        <rect x="10" y="100" width="50" height="160"/><rect x="14" y="78" width="42" height="22"/>
+        <rect x="70" y="130" width="58" height="130"/><rect x="138" y="60" width="48" height="200"/>
+        <rect x="141" y="38" width="42" height="22"/><rect x="161" y="18" width="4" height="20"/>
+        <rect x="196" y="120" width="54" height="140"/><rect x="260" y="78" width="68" height="182"/>
+        <rect x="263" y="56" width="62" height="22"/><rect x="338" y="48" width="52" height="212"/>
+        <rect x="341" y="26" width="46" height="22"/><rect x="363" y="6" width="4" height="20"/>
+        <rect x="400" y="140" width="48" height="120"/><rect x="458" y="78" width="58" height="182"/>
+        <rect x="461" y="56" width="52" height="22"/><rect x="526" y="100" width="52" height="160"/>
+        <rect x="588" y="46" width="58" height="214"/><rect x="591" y="24" width="52" height="22"/>
+        <rect x="617" y="4" width="4" height="20"/><rect x="656" y="118" width="48" height="142"/>
+        <rect x="714" y="70" width="64" height="190"/><rect x="717" y="48" width="58" height="22"/>
+        <rect x="791" y="92" width="52" height="168"/><rect x="853" y="56" width="56" height="204"/>
+        <rect x="856" y="34" width="50" height="22"/><rect x="880" y="14" width="4" height="20"/>
+        <rect x="920" y="128" width="48" height="132"/><rect x="978" y="76" width="60" height="184"/>
+        <rect x="981" y="54" width="54" height="22"/><rect x="1050" y="96" width="52" height="164"/>
+        <rect x="1112" y="50" width="58" height="210"/><rect x="1115" y="28" width="52" height="22"/>
+        <rect x="1141" y="8" width="4" height="20"/><rect x="1178" y="122" width="48" height="138"/>
+        <rect x="1236" y="66" width="64" height="194"/><rect x="1239" y="44" width="58" height="22"/>
+        <rect x="1313" y="86" width="52" height="174"/><rect x="1375" y="60" width="65" height="200"/>
+        <g fill="rgba(249,115,22,.65)" opacity=".9">
+          <rect x="146" y="68" width="5" height="5"/><rect x="158" y="68" width="5" height="5"/>
+          <rect x="146" y="84" width="5" height="5"/><rect x="158" y="84" width="5" height="5"/>
+          <rect x="346" y="56" width="5" height="5"/><rect x="358" y="56" width="5" height="5"/>
+          <rect x="346" y="72" width="5" height="5"/><rect x="358" y="72" width="5" height="5"/>
+          <rect x="596" y="54" width="5" height="5"/><rect x="608" y="54" width="5" height="5"/>
+          <rect x="596" y="70" width="5" height="5"/><rect x="608" y="70" width="5" height="5"/>
+          <rect x="858" y="64" width="5" height="5"/><rect x="870" y="64" width="5" height="5"/>
+          <rect x="1117" y="58" width="5" height="5"/><rect x="1129" y="58" width="5" height="5"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+  <div class="horizon"></div>
+  <div class="hero-plane">
+    <svg width="66" height="66" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+      <path d="M28 6 L34 22 L50 20 L50 26 L34 30 L31 42 L37 44 L37 48 L28 45 L19 48 L19 44 L25 42 L22 30 L6 26 L6 20 L22 22 Z" fill="#38BDF8"/>
+      <ellipse cx="28" cy="20" rx="4" ry="3" fill="#F97316"/>
+    </svg>
+  </div>
+  <div class="hero-plane2">
+    <svg width="38" height="38" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+      <path d="M28 6 L34 22 L50 20 L50 26 L34 30 L31 42 L37 44 L37 48 L28 45 L19 48 L19 44 L25 42 L22 30 L6 26 L6 20 L22 22 Z" fill="#38BDF8"/>
+    </svg>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge"><span class="badge-dot"></span>BUILT FOR INDIAN AIRBNB HOSTS</div>
+    <h1>Manage Every<br/><span class="accent">Airbnb</span> Property<br/>Like a Pro</h1>
+    <p class="hero-tagline">Own it · Host it · Run it</p>
+    <p>Automate cleaning tasks, sync bookings from Airbnb & Booking.com, find verified cleaners nearby, and manage guest issues — all in one dashboard built for India.</p>
+    <div class="hero-btns">
+      <a href="#waitlist" class="btn-primary">Join Waitlist — Free ✈</a>
+      <a href="app.html" class="btn-ghost">See Live Demo →</a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="hs-num">₹1,499<em>/mo</em></div><div class="hs-lbl">Starter Plan</div></div>
+      <div><div class="hs-num">1<em>hr</em></div><div class="hs-lbl">iCal Sync</div></div>
+      <div><div class="hs-num">5<em>min</em></div><div class="hs-lbl">Setup</div></div>
+      <div><div class="hs-num">24<em>/7</em></div><div class="hs-lbl">Automation</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- EARLY BIRD BANNER -->
+<div class="eb-banner">
+  <span class="eb-badge">🔥 Early Bird</span>
+  <span class="eb-text"><strong>First 50 hosts</strong> get 3 months completely free — no credit card needed.</span>
+  <div><div class="eb-count" id="spot-count">38</div><div class="eb-sub">spots left</div></div>
+  <a href="#waitlist" class="btn-primary" style="padding:10px 22px;font-size:13px;">Grab My Spot →</a>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="sec-label">FEATURES</div>
+  <div class="sec-title">Everything an Indian Host<br/>Actually Needs</div>
+  <div class="sec-sub">Built from scratch for India — WhatsApp alerts, ₹ pricing, manual walk-in bookings, nearby cleaners and more.</div>
+  <div class="feat-grid reveal">
+    <div class="feat-card"><div class="feat-icon" style="background:rgba(56,189,248,.1);">📅</div><h3>Auto Booking Sync</h3><p>iCal sync with Airbnb, Booking.com, VRBO & Google Calendar every hour. No third-party login needed.</p><span class="feat-tag" style="background:rgba(56,189,248,.1);color:var(--sky);">iCal · Real-time</span></div>
+    <div class="feat-card"><div class="feat-icon" style="background:rgba(249,115,22,.1);">🧹</div><h3>Auto Cleaning Tasks</h3><p>Guest checks out → cleaner gets WhatsApp + SMS instantly with a task link. No manual effort from you.</p><span class="feat-tag" style="background:rgba(249,115,22,.1);color:var(--orange);">WhatsApp · SMS</span></div>
+    <div class="feat-card"><div class="feat-icon" style="background:rgba(16,185,129,.1);">📍</div><h3>Find Cleaners Nearby</h3><p>Browse verified cleaners near your property on a live map. See ratings, availability, and contact instantly.</p><span class="feat-tag" style="background:rgba(16,185,129,.1);color:var(--green);">Live Map · Verified</span></div>
+    <div class="feat-card"><div class="feat-icon" style="background:rgba(139,92,246,.1);">💬</div><h3>Manual Bookings</h3><p>Add walk-in, WhatsApp & phone bookings in seconds. Perfect for India where guests often call directly.</p><span class="feat-tag" style="background:rgba(139,92,246,.1);color:var(--purple);">Walk-in · Direct</span></div>
+    <div class="feat-card"><div class="feat-icon" style="background:rgba(239,68,68,.1);">⚠️</div><h3>Guest Issue Reporting</h3><p>Guests scan a QR code to report issues without logging in. You get instant SMS. Fix it before they complain.</p><span class="feat-tag" style="background:rgba(239,68,68,.1);color:var(--red);">QR Code · Instant</span></div>
+    <div class="feat-card"><div class="feat-icon" style="background:rgba(245,158,11,.1);">⭐</div><h3>Cleaner Performance</h3><p>Rate cleaners after every task. Track avg time, on-time rate, and star ratings. Build your dream team.</p><span class="feat-tag" style="background:rgba(245,158,11,.1);color:var(--amber);">Ratings · Analytics</span></div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="sec-label">HOW IT WORKS</div>
+  <div class="sec-title">Up & Running in 5 Minutes</div>
+  <div class="sec-sub">No complicated onboarding. No calls. Just sign up and go.</div>
+  <div class="how-grid reveal">
+    <div class="how-step"><div class="how-num">✈</div><h4>Sign Up Free</h4><p>Create your account with Google or email. No credit card needed ever.</p></div>
+    <div class="how-step"><div class="how-num">🏠</div><h4>Add Properties</h4><p>Add your property details and paste your Airbnb iCal URL. Bookings import instantly.</p></div>
+    <div class="how-step"><div class="how-num">🧹</div><h4>Add or Find Cleaners</h4><p>Add your team's WhatsApp or find new verified cleaners nearby on our live map.</p></div>
+    <div class="how-step"><div class="how-num">🚀</div><h4>Automate Everything</h4><p>Sit back. Airly handles notifications, tasks, issue tracking & performance automatically.</p></div>
+  </div>
+</section>
+
+<!-- NEARBY CLEANERS FEATURE -->
+<section class="nearby" id="nearby">
+  <div class="nearby-inner">
+    <div class="nearby-text reveal">
+      <div class="sec-label">FIND CLEANERS NEARBY</div>
+      <div class="sec-title">Never Scramble for<br/>a Cleaner Again</div>
+      <p>Browse a live map of verified cleaners near your property. See their ratings, completed tasks, and availability — then contact them directly on WhatsApp.</p>
+      <ul class="nearby-bullets">
+        <li><div class="nb-icon" style="background:rgba(16,185,129,.12);">📍</div><div><div class="nb-title">Live Map View</div><div class="nb-desc">See all available cleaners near your property in real-time on an interactive map.</div></div></li>
+        <li><div class="nb-icon" style="background:rgba(56,189,248,.12);">⭐</div><div><div class="nb-title">Verified Ratings</div><div class="nb-desc">Every cleaner has real ratings from real hosts. No fake reviews, no guesswork.</div></div></li>
+        <li><div class="nb-icon" style="background:rgba(249,115,22,.12);">💬</div><div><div class="nb-title">WhatsApp Instant Contact</div><div class="nb-desc">One tap to open WhatsApp and message a cleaner directly. Indian-first experience.</div></div></li>
+      </ul>
+      <a href="app.html#cleaners" class="btn-primary">Find Cleaners in Demo →</a>
+    </div>
+    <div class="nearby-visual reveal">
+      <div class="map-card">
+        <div class="map-placeholder">
+          <div class="map-grid-lines"></div>
+          <div class="map-pin" style="top:28%;left:22%;"><div class="map-pin-dot" style="background:var(--green)"></div><div class="map-pin-label">Ramesh ★4.8</div></div>
+          <div class="map-pin" style="top:42%;left:65%;"><div class="map-pin-dot" style="background:var(--amber)"></div><div class="map-pin-label">Priya ★4.3</div></div>
+          <div class="map-pin" style="top:65%;left:38%;"><div class="map-pin-dot" style="background:var(--green)"></div><div class="map-pin-label">Suresh ★4.1</div></div>
+          <div class="map-pin" style="top:18%;left:72%;"><div class="map-pin-dot" style="background:var(--green)"></div><div class="map-pin-label">Anita ★4.6</div></div>
+          <div class="map-you"><div class="map-you-dot"></div><div class="map-you-label">Your Property</div></div>
+        </div>
+        <div class="cleaner-list">
+          <div class="cleaner-row"><div class="cl-avatar" style="background:linear-gradient(135deg,var(--sky),var(--sky-dark))">R</div><div><div class="cl-name">Ramesh Kumar</div><div class="cl-meta">📍 1.2 km · 42 tasks · ⭐ 4.8</div></div><span class="cl-badge avail">Available</span></div>
+          <div class="cleaner-row"><div class="cl-avatar" style="background:linear-gradient(135deg,#10B981,#059669)">A</div><div><div class="cl-name">Anita Desai</div><div class="cl-meta">📍 2.4 km · 31 tasks · ⭐ 4.6</div></div><span class="cl-badge avail">Available</span></div>
+          <div class="cleaner-row"><div class="cl-avatar" style="background:linear-gradient(135deg,#F97316,#EA580C)">P</div><div><div class="cl-name">Priya Sharma</div><div class="cl-meta">📍 3.1 km · 28 tasks · ⭐ 4.3</div></div><span class="cl-badge busy">On Task</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testi" id="testimonials">
+  <div class="sec-label">EARLY FEEDBACK</div>
+  <div class="sec-title">Hosts Who've Seen the Demo</div>
+  <div class="sec-sub">We showed early hosts a preview. Here's what they said.</div>
+  <div class="testi-grid reveal">
+    <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-text">"Finally a tool that gets Indian hosting. The WhatsApp notification for cleaners alone would save me 30 minutes every single day."</div><div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,var(--sky),var(--sky-dark))">R</div><div><div class="testi-name">Rahul Mehta</div><div class="testi-detail">3 properties · Goa</div></div></div></div>
+    <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-text">"The nearby cleaners map is brilliant. I've been scrambling to find cleaners on last-minute calls. This would solve that completely."</div><div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#10B981,#059669)">S</div><div><div class="testi-name">Sneha Rao</div><div class="testi-detail">5 properties · Mumbai</div></div></div></div>
+    <div class="testi-card"><div class="testi-stars">★★★★☆</div><div class="testi-text">"I manage 4 properties from my phone. This dashboard is cleaner than anything I've used. Guesty is too expensive and not India-friendly."</div><div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9)">A</div><div><div class="testi-name">Arjun Bhat</div><div class="testi-detail">4 properties · Bangalore</div></div></div></div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="sec-label">PRICING</div>
+  <div class="sec-title">Simple, Honest Pricing</div>
+  <div class="sec-sub">No hidden charges. No per-property fees. No lock-in. Cancel anytime.</div>
+  <div class="price-grid reveal">
+    <div class="price-card"><div class="price-plan">Free</div><div class="price-amount">₹<span style="font-size:54px">0</span><sub>/month</sub></div><div class="price-desc">Try Airly with your first property forever.</div><div class="price-divider"></div><ul class="price-feats"><li><span class="chk">✓</span>1 property</li><li><span class="chk">✓</span>iCal booking sync</li><li><span class="chk">✓</span>Basic dashboard</li><li><span class="chk">✓</span>Email support</li><li><span class="cross">✗</span>WhatsApp/SMS alerts</li><li><span class="cross">✗</span>Nearby cleaners map</li></ul><button class="price-btn price-btn-outline" onclick="document.getElementById('waitlist').scrollIntoView()">Get Started Free</button></div>
+    <div class="price-card featured"><div class="price-badge">MOST POPULAR</div><div class="price-plan">Starter</div><div class="price-amount"><sup>₹</sup>1,499<sub>/month</sub></div><div class="price-desc">For serious hosts managing 1–5 properties.</div><div class="price-divider"></div><ul class="price-feats"><li><span class="chk">✓</span>Up to 5 properties</li><li><span class="chk">✓</span>iCal sync every hour</li><li><span class="chk">✓</span>WhatsApp + SMS cleaner alerts</li><li><span class="chk">✓</span>Nearby cleaners map</li><li><span class="chk">✓</span>Manual bookings (walk-in/phone)</li><li><span class="chk">✓</span>Guest issue QR codes</li><li><span class="chk">✓</span>Cleaner performance tracking</li><li><span class="chk">✓</span>3 co-host accounts</li></ul><button class="price-btn price-btn-fill" onclick="document.getElementById('waitlist').scrollIntoView()">Start 30-Day Free Trial</button></div>
+    <div class="price-card"><div class="price-plan">Pro</div><div class="price-amount"><sup>₹</sup>2,999<sub>/month</sub></div><div class="price-desc">For power hosts with large portfolios.</div><div class="price-divider"></div><ul class="price-feats"><li><span class="chk">✓</span>Unlimited properties</li><li><span class="chk">✓</span>Everything in Starter</li><li><span class="chk">✓</span>Priority SMS alerts</li><li><span class="chk">✓</span>Unlimited staff accounts</li><li><span class="chk">✓</span>Advanced analytics</li><li><span class="chk">✓</span>Priority support</li></ul><button class="price-btn price-btn-outline" onclick="document.getElementById('waitlist').scrollIntoView()">Contact Sales</button></div>
+  </div>
+</section>
+
+<!-- WAITLIST -->
+<section class="waitlist" id="waitlist">
+  <div class="wl-inner reveal">
+    <div class="wl-icon">✈</div>
+    <div class="wl-title">Join the Waitlist</div>
+    <div class="wl-sub">Be among the first Indian hosts to get access. Early birds get <strong style="color:#fff">3 months completely free.</strong><br/>No credit card. No spam. Just Airly.</div>
+    <form class="wl-form" id="wl-form" action="https://formsubmit.co/saitejagunishetti@gmail.com" method="POST">
+      <input type="hidden" name="_subject" value="New Airly Waitlist Submission"/>
+      <input type="hidden" name="_captcha" value="false"/>
+      <input type="hidden" name="_template" value="table"/>
+      <input type="hidden" id="wl-next" name="_next" value=""/>
+      <div class="wl-row">
+        <input class="wl-input" id="wl-name" name="name" type="text" placeholder="Your full name" required/>
+        <input class="wl-input" id="wl-phone" name="phone" type="tel" placeholder="WhatsApp number"/>
+      </div>
+      <input class="wl-input" id="wl-email" name="email" type="email" placeholder="Email address" required/>
+      <div class="wl-row">
+        <select class="wl-select" id="wl-city" name="city"><option value="">📍 Your city / state</option><option>Goa</option><option>Mumbai</option><option>Delhi</option><option>Bangalore</option><option>Hyderabad</option><option>Chennai</option><option>Jaipur</option><option>Kerala</option><option>Manali / Himachal</option><option>Coorg / Ooty</option><option>Other</option></select>
+        <select class="wl-select" id="wl-props" name="properties"><option value="">🏠 How many properties?</option><option>1 property</option><option>2-3 properties</option><option>4-5 properties</option><option>6-10 properties</option><option>10+ properties</option></select>
+      </div>
+      <button class="wl-submit" type="submit">🚀 Reserve My Spot — It's Free</button>
+    </form>
+    <div class="wl-success" id="wl-success">
+      <div style="font-size:52px;margin-bottom:16px;">🎉</div>
+      <h3>You're on the list!</h3>
+      <p>We'll WhatsApp you as soon as Airly launches. You've secured your early bird access — 3 months free.</p>
+      <p style="margin-top:12px;font-size:13px;color:rgba(255,255,255,.4)">Share Airly with fellow hosts →</p>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap;">
+        <a href="https://wa.me/?text=Check%20out%20Airly%20-%20a%20new%20property%20management%20tool%20built%20for%20Indian%20Airbnb%20hosts!%20airly.in" target="_blank" class="btn-primary" style="font-size:13px;padding:10px 20px;">Share on WhatsApp</a>
+      </div>
+    </div>
+    <div class="wl-trust">
+      <div class="wl-trust-item">🔒 No spam, ever</div>
+      <div class="wl-trust-item">💳 No credit card</div>
+      <div class="wl-trust-item">✈ Built in India</div>
+      <div class="wl-trust-item">💬 WhatsApp updates</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo"><div class="nav-logo-icon">✈</div>Airly</a>
+        <p>The only property management platform built specifically for Indian Airbnb hosts. Automate. Manage. Grow.</p>
+        <div class="footer-social">
+          <div class="social-btn">📘</div>
+          <div class="social-btn">📸</div>
+          <div class="social-btn">💬</div>
+          <div class="social-btn">🐦</div>
+        </div>
+      </div>
+      <div class="footer-col"><h4>Product</h4><a href="#features">Features</a><a href="#nearby">Find Cleaners</a><a href="#pricing">Pricing</a><a href="app.html">Live Demo</a></div>
+      <div class="footer-col"><h4>Hosts</h4><a href="#waitlist">Join Waitlist</a><a href="#how">How it Works</a><a href="#testimonials">Reviews</a><a>Blog (coming)</a></div>
+      <div class="footer-col"><h4>Contact</h4><a>hello@airly.in</a><a>WhatsApp Support</a><a>Privacy Policy</a><a>Terms of Use</a></div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 Airly. Built with ❤️ in India for Indian hosts.</div>
+      <div class="footer-badges"><span class="footer-badge">🏠 Airbnb Partner Ready</span><span class="footer-badge">🇮🇳 Made in India</span><span class="footer-badge">🔒 Secure & Private</span></div>
+    </div>
+  </div>
+</footer>
+
+<!-- WHATSAPP FLOAT -->
+<div class="wa-float">
+  <div class="wa-tooltip" id="wa-tooltip">Chat with us on WhatsApp 💬</div>
+  <button class="wa-btn" onclick="window.open('https://wa.me/91999999999?text=Hi!%20I%20saw%20Airly%20and%20want%20to%20know%20more','_blank')">💬</button>
+</div>
+
+<script>
+// Loader
+const msgs=['Loading your experience...','Preparing the dashboard...','Setting up properties...','Almost there...','Welcome to Airly ✈'];
+let mi=0;const mel=document.getElementById('ld-msg');
+const mint=setInterval(()=>{mi=(mi+1)%msgs.length;mel.textContent=msgs[mi];},500);
+window.addEventListener('load',()=>{
+  setTimeout(()=>{clearInterval(mint);mel.textContent='Welcome to Airly ✈';
+    setTimeout(()=>{document.getElementById('loader').classList.add('hide');},500);},2200);
+});
+
+// Navbar scroll
+window.addEventListener('scroll',()=>{
+  document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>30);
+});
+
+// Mobile menu
+function toggleMenu(forceState){
+  const mobileMenu=document.getElementById('mobile-menu');
+  const hamburger=document.getElementById('hamburger');
+  const shouldOpen=typeof forceState==='boolean'?forceState:!mobileMenu.classList.contains('open');
+  mobileMenu.classList.toggle('open',shouldOpen);
+  hamburger.classList.toggle('active',shouldOpen);
+  hamburger.setAttribute('aria-expanded',shouldOpen?'true':'false');
+  mobileMenu.setAttribute('aria-hidden',shouldOpen?'false':'true');
+  document.body.classList.toggle('menu-open',shouldOpen);
+}
+
+window.addEventListener('resize',()=>{
+  if(window.innerWidth>768){toggleMenu(false);}
+});
+
+document.querySelectorAll('#mobile-menu a').forEach(link=>{
+  link.addEventListener('click',()=>toggleMenu(false));
+});
+
+// WhatsApp tooltip auto-hide
+setTimeout(()=>{const t=document.getElementById('wa-tooltip');if(t)t.style.display='none';},5000);
+
+// Scroll reveal
+const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// Animated spot counter
+let spots=38;
+setInterval(()=>{if(spots>12&&Math.random()<.3){spots--;document.getElementById('spot-count').textContent=spots;}},8000);
+
+function showWaitlistSuccess(){
+  document.getElementById('wl-form').style.display='none';
+  document.getElementById('wl-success').style.display='block';
+  if(spots>1){spots--;document.getElementById('spot-count').textContent=spots;}
+}
+
+const waitlistNext=document.getElementById('wl-next');
+if(waitlistNext){
+  waitlistNext.value=window.location.origin+window.location.pathname+'?waitlist=success#waitlist';
+}
+
+if(new URLSearchParams(window.location.search).get('waitlist')==='success'){
+  showWaitlistSuccess();
+}
+</script>
+</body>
+</html>

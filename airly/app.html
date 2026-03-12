@@ -1,0 +1,1127 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Airly — Live Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sky:#38BDF8;--sky-dark:#0369A1;--sky-mid:#075985;--sky-deep:#0C4A6E;--navy:#061F35;
+  --orange:#F97316;--orange-dark:#EA580C;--amber:#FBBF24;
+  --green:#10B981;--red:#EF4444;--purple:#8B5CF6;--yellow:#F59E0B;
+  --s50:#F8FAFC;--s100:#F1F5F9;--s200:#E2E8F0;--s300:#CBD5E1;
+  --s400:#94A3B8;--s500:#64748B;--s700:#334155;--s900:#0F172A;
+  --sidebar:244px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--s100);color:var(--s900);overflow-x:hidden;}
+
+/* LOADER */
+#loader{position:fixed;inset:0;z-index:9999;background:linear-gradient(160deg,#040E1A,#0C4A6E);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .7s,visibility .7s;}
+#loader.hide{opacity:0;visibility:hidden;pointer-events:none;}
+.ld-logo{font-family:'Syne',sans-serif;font-size:52px;font-weight:800;color:#fff;letter-spacing:-2px;position:relative;z-index:1;}
+.ld-logo span{color:var(--orange);}
+.ld-tagline{font-size:12px;letter-spacing:5px;color:rgba(255,255,255,.3);text-transform:uppercase;margin:8px 0 36px;position:relative;z-index:1;}
+.ld-bar-wrap{width:200px;height:2px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;position:relative;z-index:1;}
+.ld-bar{height:100%;background:linear-gradient(90deg,var(--sky),var(--orange));width:0;animation:ldp 2.2s ease forwards;border-radius:2px;}
+@keyframes ldp{0%{width:0}60%{width:70%}90%{width:92%}100%{width:100%}}
+.ld-plane{position:absolute;animation:ldf 2.6s cubic-bezier(.25,.46,.45,.94) infinite;}
+@keyframes ldf{0%{bottom:64px;left:calc(50% - 8px);transform:rotate(-42deg) scale(.5);opacity:0;}30%{opacity:1;}70%{bottom:50vh;left:calc(50% + 90px);transform:rotate(-18deg) scale(1);}100%{bottom:80vh;left:calc(50% + 300px);transform:rotate(0deg) scale(.6);opacity:0;}}
+.ld-msg{font-size:12px;color:rgba(255,255,255,.3);margin-top:14px;letter-spacing:.5px;position:relative;z-index:1;}
+
+/* DEMO BANNER */
+.demo-bar{background:linear-gradient(90deg,rgba(2,10,22,.96),rgba(12,24,42,.95));border-bottom:1px solid rgba(56,189,248,.18);padding:10px 5%;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;position:fixed;top:0;left:0;right:0;z-index:998;backdrop-filter:blur(20px);box-shadow:0 10px 28px rgba(0,0,0,.22);}
+.demo-bar-left{display:flex;align-items:center;gap:10px;font-size:13px;color:rgba(255,255,255,.88);}
+.demo-pill{background:var(--orange);color:#fff;font-size:10px;font-weight:800;letter-spacing:2px;padding:4px 12px;border-radius:100px;flex-shrink:0;}
+.demo-bar-right{display:flex;gap:10px;align-items:center;}
+.demo-bar a{font-size:12px;font-weight:700;color:#e0f2fe;text-decoration:none;}
+.demo-bar a:hover{text-decoration:underline;color:#fff;}
+.demo-bar-cta{background:var(--orange);color:#fff;padding:8px 18px;border-radius:10px;font-size:12px;font-weight:700;text-decoration:none!important;transition:all .2s;}
+.demo-bar-cta:hover{background:var(--orange-dark);transform:scale(1.03);}
+.demo-bar-tools{display:none;align-items:center;gap:8px;margin-left:auto;}
+.demo-weather{display:flex;align-items:center;gap:4px;padding:7px 10px;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);font-size:12px;font-weight:700;color:#fff;white-space:nowrap;}
+.demo-weather .wc-icon{font-size:12px;line-height:1;}
+.demo-notif{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:16px;color:#fff;transition:all .2s;}
+.demo-notif:hover{background:rgba(255,255,255,.12);border-color:rgba(125,211,252,.38);}
+.demo-notif .notif-dot{border-color:#0b1b2d;}
+.demo-menu-btn{display:none;align-items:center;justify-content:center;width:42px;height:42px;border-radius:12px;border:1px solid rgba(56,189,248,.34);background:rgba(56,189,248,.12);box-shadow:0 8px 20px rgba(0,0,0,.16);cursor:pointer;transition:all .25s;color:#fff;}
+.demo-menu-btn:hover{background:rgba(56,189,248,.18);border-color:rgba(125,211,252,.55);}
+.demo-menu-btn span{display:block;width:20px;height:2px;background:#fff;border-radius:2px;transition:transform .3s ease,opacity .2s ease;position:relative;}
+.demo-menu-btn span::before,.demo-menu-btn span::after{content:'';position:absolute;left:0;width:20px;height:2px;background:#fff;border-radius:2px;transition:transform .3s ease,top .3s ease,bottom .3s ease;}
+.demo-menu-btn span::before{top:-6px;}
+.demo-menu-btn span::after{bottom:-6px;}
+.demo-menu-btn.active span{background:transparent;}
+.demo-menu-btn.active span::before{top:0;transform:rotate(45deg);}
+.demo-menu-btn.active span::after{bottom:0;transform:rotate(-45deg);}
+body.app-menu-open{overflow:hidden;}
+.flow-grid{display:grid;gap:20px;padding:8px 0;}
+.flow-grid.flow-grid-three{grid-template-columns:repeat(3,minmax(0,1fr));}
+.flow-grid.flow-grid-four{grid-template-columns:repeat(4,minmax(0,1fr));gap:0;padding:20px 0;position:relative;}
+.flow-grid.flow-grid-four::before{content:'';position:absolute;top:44px;left:12%;right:12%;height:1px;background:linear-gradient(90deg,var(--orange),var(--sky),var(--orange));opacity:.3;}
+.flow-step{text-align:center;padding:0 16px;position:relative;z-index:1;}
+.flow-step-circle{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;font-size:26px;margin:0 auto 14px;border:1px solid rgba(148,163,184,.28);box-shadow:0 14px 32px rgba(15,23,42,.06);}
+.flow-step-card{padding:20px;background:var(--s50);border-radius:14px;text-align:center;border:1px solid rgba(203,213,225,.72);}
+.flow-step-title{font-size:14px;font-weight:700;color:var(--s900);margin-bottom:6px;}
+.flow-step-text{font-size:12px;color:var(--s500);line-height:1.55;}
+.flow-tip{margin-top:14px;padding:14px 16px;border-radius:14px;background:linear-gradient(180deg,rgba(249,115,22,.08),rgba(56,189,248,.06));border:1px solid rgba(249,115,22,.16);font-size:13px;line-height:1.6;color:var(--s700);}
+.flow-tip strong{color:var(--s900);}
+.app-footer{margin-top:28px;padding:18px 20px 8px;border-top:1px solid rgba(148,163,184,.2);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;color:var(--s500);}
+.app-footer-brand{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;color:var(--s900);}
+.app-footer-brand span{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,var(--sky-dark),var(--sky));color:#fff;font-size:16px;box-shadow:0 10px 24px rgba(3,105,161,.18);}
+.app-footer-copy{font-size:12px;line-height:1.6;}
+
+/* LAYOUT */
+.app-shell{display:flex;padding-top:44px;min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar);background:#0F172A;flex-shrink:0;display:flex;flex-direction:column;padding:16px 10px;position:fixed;top:44px;left:0;bottom:0;overflow-y:auto;z-index:100;border-right:1px solid rgba(255,255,255,.05);transition:transform .3s;}
+.sidebar-logo{padding:8px 12px 22px;}
+.sl-text{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--sky);letter-spacing:-.5px;}
+.sl-tag{font-size:10px;color:var(--s500);letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+.sec-lbl{font-size:10px;letter-spacing:2px;color:var(--s700);text-transform:uppercase;padding:0 12px;margin:14px 0 5px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;cursor:pointer;transition:all .15s;margin-bottom:2px;color:var(--s500);font-size:13px;font-weight:500;position:relative;user-select:none;}
+.nav-item:hover{background:rgba(255,255,255,.05);color:rgba(255,255,255,.8);}
+.nav-item.active{background:rgba(56,189,248,.1);color:var(--sky);}
+.nav-item.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:3px;border-radius:0 2px 2px 0;background:var(--sky);}
+.nav-link-item{text-decoration:none;}
+.ni-icon{font-size:15px;width:20px;text-align:center;flex-shrink:0;}
+.ni-badge{margin-left:auto;font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;min-width:20px;text-align:center;background:var(--orange);color:#fff;}
+.ni-badge.g{background:var(--green);}
+.ni-badge.r{background:var(--red);}
+.sidebar-bottom{margin-top:auto;padding-top:14px;border-top:1px solid rgba(255,255,255,.06);}
+.s-user{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;}
+.s-user:hover{background:rgba(255,255,255,.04);}
+.s-avatar{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--sky),var(--sky-dark));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0;}
+.s-name{font-size:13px;font-weight:600;color:#fff;}
+.s-plan{font-size:10px;color:var(--orange);font-weight:700;letter-spacing:.5px;}
+
+/* MOBILE SIDEBAR TOGGLE */
+.mob-toggle{display:none;position:fixed;bottom:20px;left:20px;z-index:200;width:48px;height:48px;border-radius:14px;background:var(--navy);border:1px solid rgba(56,189,248,.25);color:var(--sky);font-size:20px;cursor:pointer;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.4);}
+
+/* MAIN */
+.main{flex:1;margin-left:var(--sidebar);padding:24px;min-height:calc(100vh - 44px);overflow-x:hidden;}
+.page{display:none;animation:fadeIn .25s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px;}
+.tb-left h1{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--s900);letter-spacing:-.8px;}
+.tb-left p{font-size:13px;color:var(--s500);margin-top:3px;}
+.dashboard-hero{background:linear-gradient(135deg,#08243e,#0c4a6e 58%,#0369a1);border-radius:24px;padding:28px;border:1px solid rgba(56,189,248,.18);color:#fff;display:grid;grid-template-columns:1.3fr .9fr;gap:18px;align-items:center;margin-bottom:22px;overflow:hidden;position:relative;box-shadow:0 20px 44px rgba(3,105,161,.16);}
+.dashboard-hero::after{content:'';position:absolute;inset:auto -40px -60px auto;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(249,115,22,.24),transparent 70%);}
+.dh-copy{position:relative;z-index:1;}
+.dh-kicker{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(224,242,254,.72);margin-bottom:10px;}
+.dh-title{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;line-height:1.02;letter-spacing:-1.2px;margin-bottom:10px;}
+.dh-text{font-size:14px;line-height:1.7;color:rgba(255,255,255,.78);max-width:520px;}
+.dh-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
+.dh-panel{position:relative;z-index:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:18px;backdrop-filter:blur(10px);}
+.dh-panel-top{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:rgba(224,242,254,.72);margin-bottom:12px;font-weight:700;}
+.dh-metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.dh-metric{background:rgba(255,255,255,.08);border-radius:14px;padding:12px;}
+.dh-metric-val{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;line-height:1;color:#fff;}
+.dh-metric-lbl{font-size:11px;color:rgba(255,255,255,.7);margin-top:4px;}
+.tb-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.tb-btn{padding:9px 18px;border-radius:11px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.tb-outline{background:#fff;border:1.5px solid var(--s200);color:var(--s700);}
+.tb-outline:hover{border-color:var(--sky);color:var(--sky-dark);}
+.tb-fill{background:var(--orange);color:#fff;box-shadow:0 4px 14px rgba(249,115,22,.3);}
+.tb-fill:hover{background:var(--orange-dark);transform:translateY(-1px);}
+.tb-fill.blue{background:linear-gradient(135deg,var(--sky-dark),var(--sky-mid));box-shadow:0 4px 14px rgba(3,105,161,.3);}
+.notif-btn{width:40px;height:40px;border-radius:11px;background:#fff;border:1.5px solid var(--s200);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:17px;transition:all .2s;}
+.notif-btn:hover{border-color:var(--sky);}
+.notif-dot{position:absolute;top:8px;right:8px;width:8px;height:8px;background:var(--red);border-radius:50%;border:2px solid #fff;}
+.weather-chip{display:flex;align-items:center;gap:6px;background:#fff;border:1.5px solid var(--s200);padding:8px 14px;border-radius:11px;font-size:13px;font-weight:600;color:var(--s700);}
+.weather-chip .wc-icon{font-size:14px;line-height:1;}
+
+/* SYNC BANNER */
+.sync-bar{background:linear-gradient(135deg,rgba(3,105,161,.06),rgba(56,189,248,.03));border:1px solid rgba(56,189,248,.15);border-radius:14px;padding:12px 20px;display:flex;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+.sync-live{display:flex;align-items:center;gap:7px;}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pdot 2s infinite;}
+@keyframes pdot{0%,100%{opacity:1}50%{opacity:.3}}
+.sync-live-text{font-size:12px;font-weight:700;color:var(--green);letter-spacing:.5px;}
+.sync-meta{font-size:12px;color:var(--s500);flex:1;}
+.sync-next{font-size:12px;color:var(--sky-dark);font-weight:600;margin-left:auto;}
+
+/* STAT CARDS */
+.stats-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:20px;}
+.stat-card{background:#fff;border-radius:18px;padding:20px 16px;border:1px solid var(--s200);transition:all .25s;cursor:pointer;position:relative;overflow:hidden;}
+.stat-card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.09);}
+.stat-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
+.sc-blue::after{background:linear-gradient(90deg,var(--sky),var(--sky-dark));}
+.sc-orange::after{background:linear-gradient(90deg,var(--orange),var(--orange-dark));}
+.sc-yellow::after{background:linear-gradient(90deg,var(--amber),var(--yellow));}
+.sc-green::after{background:linear-gradient(90deg,var(--green),#059669);}
+.sc-purple::after{background:linear-gradient(90deg,var(--purple),#6D28D9);}
+.sc-red::after{background:linear-gradient(90deg,var(--red),#DC2626);}
+.sc-icon{font-size:22px;margin-bottom:12px;}
+.sc-val{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--s900);line-height:1;margin-bottom:5px;}
+.sc-lbl{font-size:11px;color:var(--s500);font-weight:500;}
+.sc-change{font-size:11px;margin-top:7px;font-weight:600;}
+.sc-up{color:var(--green);}
+.sc-down{color:var(--red);}
+.quick-grid{display:none;grid-template-columns:repeat(3,minmax(0,1fr));}
+.quick-stat{padding:18px 16px 16px;border-radius:22px;box-shadow:0 10px 30px rgba(15,23,42,.06);}
+.quick-stat .sc-icon{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px;background:var(--s50);box-shadow:inset 0 0 0 1px rgba(148,163,184,.12);}
+.quick-stat .sc-val{font-size:30px;margin-bottom:8px;}
+.quick-stat .sc-lbl{font-size:12px;font-weight:700;color:var(--s700);}
+.quick-stat .sc-change{font-size:11px;line-height:1.4;min-height:30px;}
+.qs-blue .sc-icon{background:rgba(56,189,248,.12);}
+.qs-orange .sc-icon{background:rgba(249,115,22,.12);}
+.qs-yellow .sc-icon{background:rgba(245,158,11,.12);}
+.qs-green .sc-icon{background:rgba(16,185,129,.12);}
+.qs-purple .sc-icon{background:rgba(139,92,246,.12);}
+.qs-red .sc-icon{background:rgba(239,68,68,.12);}
+.desktop-stats{display:grid;}
+.mobile-grid-action{display:none;margin:-2px 0 18px;}
+
+/* CARD */
+.card{background:#fff;border-radius:18px;padding:22px;border:1px solid var(--s200);overflow:hidden;}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.card-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--s900);}
+.card-action{font-size:12px;color:var(--sky-dark);font-weight:600;cursor:pointer;}
+.dash-row{display:grid;gap:16px;margin-bottom:16px;}
+.dash-two{grid-template-columns:1.4fr 1fr;}
+.dash-three{grid-template-columns:1fr 1fr 1fr;}
+
+/* CHECK IN/OUT */
+.ck-card{border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.ck-in{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.18);}
+.ck-out{background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.18);}
+.ck-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.ck-icon-in{background:rgba(16,185,129,.12);}
+.ck-icon-out{background:rgba(249,115,22,.12);}
+.ck-lbl{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:2px;}
+.ck-lbl-in{color:var(--green);}
+.ck-lbl-out{color:var(--orange);}
+.ck-guest{font-size:14px;font-weight:600;color:var(--s900);}
+.ck-detail{font-size:12px;color:var(--s500);margin-top:1px;}
+
+/* ACTIVITY */
+.act-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--s100);}
+.act-item:last-child{border-bottom:none;}
+.act-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0;}
+.act-text{font-size:13px;color:var(--s700);line-height:1.5;flex:1;}
+.act-time{font-size:11px;color:var(--s400);flex-shrink:0;margin-top:2px;}
+
+/* TASK */
+.task-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--s100);}
+.task-item:last-child{border-bottom:none;}
+.t-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.t-dot-pending{background:var(--amber);}
+.t-dot-active{background:var(--green);}
+.t-dot-done{background:var(--s400);}
+.t-info{flex:1;}
+.t-prop{font-size:13px;font-weight:600;color:var(--s900);}
+.t-cleaner{font-size:11px;color:var(--s500);margin-top:1px;}
+.t-badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:100px;}
+.tb-pending{background:rgba(245,158,11,.1);color:var(--yellow);}
+.tb-active{background:rgba(16,185,129,.1);color:var(--green);}
+.tb-done{background:var(--s100);color:var(--s500);}
+
+/* LEADERBOARD */
+.lb-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--s100);}
+.lb-item:last-child{border-bottom:none;}
+.lb-rank{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--s300);width:28px;text-align:center;}
+.lb-av{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0;}
+.lb-name{font-size:13px;font-weight:600;color:var(--s900);}
+.lb-tasks{font-size:11px;color:var(--s500);margin-top:1px;}
+.lb-right{margin-left:auto;text-align:right;}
+.lb-rating{font-size:13px;font-weight:700;color:var(--s900);}
+.lb-time{font-size:11px;color:var(--s500);}
+
+/* CALENDAR */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.cal-lbl{font-size:10px;font-weight:700;color:var(--s400);text-align:center;padding:4px;}
+.cal-d{aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--s600);cursor:pointer;transition:all .15s;}
+.cal-d:hover{background:var(--s100);}
+.cal-booked{background:rgba(56,189,248,.12);color:var(--sky-dark);font-weight:600;}
+.cal-checkout{background:rgba(249,115,22,.12);color:var(--orange-dark);font-weight:600;}
+.cal-today{background:var(--sky-dark);color:#fff;font-weight:700;}
+.cal-empty{opacity:0;pointer-events:none;}
+.cal-legend{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;}
+.cl-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--s500);}
+.cl-dot{width:10px;height:10px;border-radius:3px;}
+
+/* PROP TABLE */
+.prop-table{width:100%;border-collapse:collapse;}
+.prop-table th{text-align:left;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--s500);font-weight:700;padding:0 14px 12px;border-bottom:1px solid var(--s200);}
+.prop-table td{padding:13px 14px;font-size:13px;color:var(--s700);border-bottom:1px solid var(--s100);}
+.prop-table tr:last-child td{border-bottom:none;}
+.prop-table tr:hover td{background:var(--s50);}
+.p-name{font-weight:600;color:var(--s900);}
+.p-addr{font-size:11px;color:var(--s400);margin-top:2px;}
+.pill{font-size:11px;font-weight:700;padding:4px 12px;border-radius:100px;display:inline-block;}
+.pill-avail{background:rgba(16,185,129,.1);color:var(--green);}
+.pill-booked{background:rgba(56,189,248,.1);color:var(--sky-dark);}
+.pill-clean{background:rgba(245,158,11,.1);color:var(--yellow);}
+.pill-maint{background:rgba(239,68,68,.1);color:var(--red);}
+.sync-info-sm{font-size:11px;color:var(--s500);display:flex;align-items:center;gap:5px;}
+.s-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;}
+.icon-btn{width:32px;height:32px;border-radius:8px;border:1.5px solid var(--s200);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;transition:all .2s;}
+.icon-btn:hover{border-color:var(--sky);color:var(--sky-dark);}
+
+/* ── PROPERTIES PAGE ── */
+.prop-add-card{background:linear-gradient(135deg,rgba(3,105,161,.08),rgba(56,189,248,.04));border:1.5px dashed rgba(56,189,248,.3);border-radius:18px;padding:36px;text-align:center;cursor:pointer;transition:all .3s;margin-bottom:20px;}
+.prop-add-card:hover{border-color:var(--sky);background:rgba(56,189,248,.06);}
+.prop-add-icon{font-size:40px;margin-bottom:12px;}
+.prop-add-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--s900);margin-bottom:6px;}
+.prop-add-sub{font-size:13px;color:var(--s500);}
+.props-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px;}
+.prop-card{background:#fff;border:1px solid var(--s200);border-radius:22px;overflow:hidden;transition:all .3s;}
+.prop-card:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(0,0,0,.1);}
+.prop-img{height:180px;position:relative;overflow:hidden;}
+.prop-img-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px;}
+.prop-status-badge{position:absolute;top:12px;right:12px;}
+.prop-body{padding:18px 20px;}
+.prop-card-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--s900);margin-bottom:4px;}
+.prop-card-addr{font-size:12px;color:var(--s500);margin-bottom:14px;}
+.prop-stats-row{display:flex;gap:16px;}
+.prop-stat{display:flex;flex-direction:column;}
+.prop-stat-val{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--s900);}
+.prop-stat-lbl{font-size:10px;color:var(--s500);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.prop-card-footer{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-top:1px solid var(--s100);}
+.prop-ical{font-size:11px;color:var(--s500);display:flex;align-items:center;gap:5px;}
+
+/* ── ADD PROPERTY MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:all .3s;backdrop-filter:blur(4px);}
+.modal-overlay.open{opacity:1;visibility:visible;}
+.modal{background:#fff;border-radius:24px;padding:36px;max-width:560px;width:100%;max-height:90vh;overflow-y:auto;transform:translateY(20px);transition:transform .3s;box-shadow:0 40px 100px rgba(0,0,0,.3);}
+.modal-overlay.open .modal{transform:translateY(0);}
+.modal h2{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--s900);margin-bottom:6px;letter-spacing:-.8px;}
+.modal p{font-size:13px;color:var(--s500);margin-bottom:28px;}
+.form-group{margin-bottom:16px;}
+.form-label{font-size:12px;font-weight:700;color:var(--s700);margin-bottom:7px;display:block;letter-spacing:.3px;text-transform:uppercase;}
+.form-input{width:100%;padding:13px 16px;border-radius:12px;border:1.5px solid var(--s200);font-size:14px;color:var(--s900);outline:none;transition:all .2s;font-family:'DM Sans',sans-serif;background:var(--s50);}
+.form-input:focus{border-color:var(--sky-dark);background:#fff;box-shadow:0 0 0 4px rgba(56,189,248,.08);}
+.form-input::placeholder{color:var(--s400);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-select{width:100%;padding:13px 16px;border-radius:12px;border:1.5px solid var(--s200);font-size:14px;color:var(--s700);background:var(--s50);font-family:'DM Sans',sans-serif;cursor:pointer;outline:none;}
+.form-select:focus{border-color:var(--sky-dark);box-shadow:0 0 0 4px rgba(56,189,248,.08);}
+.modal-btns{display:flex;gap:12px;margin-top:24px;}
+.modal-cancel{flex:1;padding:13px;border-radius:12px;border:1.5px solid var(--s200);background:#fff;color:var(--s700);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.modal-submit{flex:2;padding:13px;border-radius:12px;background:linear-gradient(135deg,var(--sky-dark),var(--sky-mid));color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 6px 20px rgba(3,105,161,.3);transition:all .2s;}
+.modal-submit:hover{box-shadow:0 10px 28px rgba(3,105,161,.45);transform:translateY(-1px);}
+.ical-hint{font-size:12px;color:var(--sky-dark);margin-top:6px;cursor:pointer;}
+.img-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;}
+.img-slot{aspect-ratio:1;border-radius:10px;border:1.5px dashed var(--s200);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;background:var(--s50);transition:all .2s;}
+.img-slot:hover{border-color:var(--sky);background:rgba(56,189,248,.04);}
+.img-slot.filled{border-style:solid;border-color:var(--s200);}
+
+/* ── BOOKINGS ── */
+.booking-tabs{display:flex;gap:4px;background:#fff;border:1px solid var(--s200);border-radius:12px;padding:5px;margin-bottom:18px;width:fit-content;overflow-x:auto;}
+.b-tab{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;color:var(--s500);transition:all .2s;white-space:nowrap;}
+.b-tab.active{background:var(--sky-dark);color:#fff;}
+.filters-row{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+.f-input{padding:9px 14px;border-radius:10px;border:1.5px solid var(--s200);font-size:13px;font-family:'DM Sans',sans-serif;color:var(--s700);background:#fff;outline:none;flex:1;min-width:200px;}
+.f-select{padding:9px 14px;border-radius:10px;border:1.5px solid var(--s200);font-size:13px;color:var(--s700);background:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;outline:none;}
+.bk-card{background:#fff;border:1px solid var(--s200);border-radius:16px;padding:18px 22px;margin-bottom:10px;display:flex;align-items:center;gap:18px;transition:all .2s;flex-wrap:wrap;}
+.bk-card:hover{box-shadow:0 6px 22px rgba(0,0,0,.08);}
+.bk-avatar{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;flex-shrink:0;}
+.bk-guest{font-size:14px;font-weight:700;color:var(--s900);}
+.bk-prop{font-size:12px;color:var(--s500);margin-top:2px;}
+.bk-dates{font-size:12px;color:var(--s600);margin-top:4px;}
+.bk-source{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;margin-top:5px;}
+.src-airbnb{background:rgba(255,90,95,.1);color:#FF5A5F;}
+.src-wa{background:rgba(37,211,102,.1);color:#25D366;}
+.src-bc{background:rgba(0,53,128,.1);color:#003580;}
+.src-direct{background:rgba(56,189,248,.1);color:var(--sky-dark);}
+.src-phone{background:rgba(139,92,246,.1);color:var(--purple);}
+.bk-amount{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--s900);}
+.bk-nights{font-size:11px;color:var(--s500);}
+.bk-actions{display:flex;gap:6px;margin-left:auto;}
+.bk-info{flex:1;min-width:180px;}
+
+/* ── MANUAL BOOKING MODAL ── */
+.mb-form{display:grid;gap:14px;}
+.mb-form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+
+/* ── NEARBY CLEANERS ── */
+.nearby-page{display:grid;grid-template-columns:1fr 380px;gap:20px;align-items:start;}
+.map-wrap{background:#fff;border:1px solid var(--s200);border-radius:22px;overflow:hidden;position:sticky;top:88px;}
+.map-area{height:480px;background:linear-gradient(160deg,#0B2240,#0E3258);position:relative;overflow:hidden;}
+.map-grid-svg{position:absolute;inset:0;opacity:.4;}
+.map-road-h{position:absolute;left:0;right:0;height:2px;background:rgba(255,255,255,.08);}
+.map-road-v{position:absolute;top:0;bottom:0;width:2px;background:rgba(255,255,255,.08);}
+.map-search{position:absolute;top:16px;left:50%;transform:translateX(-50%);width:80%;z-index:5;}
+.map-search-input{width:100%;padding:12px 16px;border-radius:12px;border:none;background:rgba(255,255,255,.95);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;box-shadow:0 4px 20px rgba(0,0,0,.3);}
+.map-you-marker{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:4;}
+.map-you-pin{width:20px;height:20px;border-radius:50%;background:var(--orange);border:3px solid #fff;box-shadow:0 0 0 8px rgba(249,115,22,.2),0 4px 12px rgba(0,0,0,.3);}
+.map-you-lbl{background:var(--orange);color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:6px;margin-top:5px;white-space:nowrap;text-align:center;}
+.map-cleaner-pin{position:absolute;z-index:3;display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:all .2s;}
+.map-cleaner-pin:hover{transform:scale(1.2);}
+.map-cleaner-pin.is-hidden,.cleaner-card.is-hidden{display:none!important;}
+.mcp-dot{width:16px;height:16px;border-radius:50%;border:2.5px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3);}
+.mcp-lbl{color:#fff;font-size:10px;font-weight:700;padding:3px 7px;border-radius:6px;margin-top:3px;white-space:nowrap;}
+.map-legend{padding:14px 18px;display:flex;gap:14px;flex-wrap:wrap;border-top:1px solid var(--s100);}
+.ml-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--s500);}
+.ml-dot{width:10px;height:10px;border-radius:50%;}
+.cleaners-list{display:flex;flex-direction:column;gap:14px;}
+.cleaner-card{background:#fff;border:1px solid var(--s200);border-radius:20px;padding:22px;transition:all .3s;}
+.cleaner-card:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(0,0,0,.1);}
+.cleaner-card.highlighted{border-color:rgba(56,189,248,.4);box-shadow:0 0 0 3px rgba(56,189,248,.1);}
+.cc-top{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+.cc-avatar{width:52px;height:52px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;flex-shrink:0;}
+.cc-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--s900);}
+.cc-dist{font-size:12px;color:var(--s500);margin-top:3px;}
+.cc-status{margin-left:auto;font-size:11px;font-weight:700;padding:5px 12px;border-radius:100px;}
+.cc-avail{background:rgba(16,185,129,.1);color:var(--green);}
+.cc-busy{background:rgba(245,158,11,.1);color:var(--amber);}
+.cc-stars{color:var(--amber);font-size:15px;letter-spacing:1px;}
+.cc-rating-num{font-size:13px;color:var(--s500);margin-left:5px;}
+.cc-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:14px 0;}
+.cc-stat{background:var(--s50);border-radius:10px;padding:9px 10px;text-align:center;}
+.cc-stat-val{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:var(--s900);}
+.cc-stat-lbl{font-size:10px;color:var(--s500);margin-top:1px;}
+.cc-bar-wrap{margin-bottom:8px;}
+.cc-bar-lbl{display:flex;justify-content:space-between;font-size:11px;color:var(--s500);margin-bottom:4px;}
+.cc-bar-track{height:5px;background:var(--s100);border-radius:100px;overflow:hidden;}
+.cc-bar-fill{height:100%;border-radius:100px;}
+.cc-actions{display:flex;gap:8px;margin-top:14px;}
+.cc-btn{flex:1;padding:10px;border-radius:11px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.cc-wa{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;}
+.cc-wa:hover{box-shadow:0 6px 18px rgba(37,211,102,.4);}
+.cc-hire{background:linear-gradient(135deg,var(--orange),var(--orange-dark));color:#fff;}
+.cc-hire:hover{box-shadow:0 6px 18px rgba(249,115,22,.4);}
+.cc-view{background:var(--s100);color:var(--s700);}
+.cc-view:hover{background:var(--s200);}
+.nearby-filter{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.nf-btn{padding:8px 16px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid var(--s200);background:#fff;color:var(--s600);transition:all .2s;font-family:'DM Sans',sans-serif;}
+.nf-btn.active{border-color:var(--sky-dark);background:rgba(56,189,248,.06);color:var(--sky-dark);}
+.nf-btn:hover{border-color:var(--sky);}
+
+/* ── ISSUES ── */
+.issues-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;}
+.issue-card{background:#fff;border:1px solid var(--s200);border-radius:18px;padding:20px;transition:all .25s;position:relative;overflow:hidden;}
+.issue-card:hover{box-shadow:0 8px 28px rgba(0,0,0,.1);transform:translateY(-3px);}
+.iss-bar{position:absolute;top:0;left:0;bottom:0;width:4px;border-radius:18px 0 0 18px;}
+.iss-bar-h{background:linear-gradient(to bottom,var(--red),#DC2626);}
+.iss-bar-m{background:linear-gradient(to bottom,var(--amber),var(--yellow));}
+.iss-bar-l{background:linear-gradient(to bottom,var(--green),#059669);}
+.iss-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;padding-left:14px;}
+.iss-cat{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--s400);font-weight:700;}
+.iss-pri{font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;}
+.iss-pri-h{background:rgba(239,68,68,.08);color:var(--red);}
+.iss-pri-m{background:rgba(245,158,11,.08);color:var(--yellow);}
+.iss-pri-l{background:rgba(16,185,129,.08);color:var(--green);}
+.iss-title{font-size:15px;font-weight:700;color:var(--s900);margin-bottom:7px;padding-left:14px;}
+.iss-desc{font-size:12px;color:var(--s500);line-height:1.6;padding-left:14px;margin-bottom:14px;font-weight:300;}
+.iss-footer{display:flex;align-items:center;justify-content:space-between;padding-left:14px;border-top:1px solid var(--s100);padding-top:12px;}
+.iss-prop{font-size:11px;color:var(--s500);}
+.iss-assign-btn{font-size:12px;font-weight:700;color:var(--sky-dark);cursor:pointer;background:rgba(56,189,248,.08);padding:6px 14px;border-radius:9px;border:none;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.iss-assign-btn:hover{background:rgba(56,189,248,.15);}
+.iss-resolve-btn{font-size:12px;font-weight:700;color:var(--green);cursor:pointer;background:rgba(16,185,129,.08);padding:6px 14px;border-radius:9px;border:none;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.iss-resolve-btn:hover{background:rgba(16,185,129,.15);}
+
+/* ── CLEANER PERFORMANCE ── */
+.perf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;}
+.perf-card{background:#fff;border:1px solid var(--s200);border-radius:22px;padding:26px;transition:all .25s;}
+.perf-card:hover{box-shadow:0 8px 32px rgba(0,0,0,.1);transform:translateY(-4px);}
+.pc-top{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+.pc-av{width:52px;height:52px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;flex-shrink:0;}
+.pc-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--s900);}
+.pc-status{font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;margin-top:4px;display:inline-block;}
+.pc-avail{background:rgba(16,185,129,.1);color:var(--green);}
+.pc-ontask{background:rgba(56,189,248,.1);color:var(--sky-dark);}
+.pc-stars{color:var(--amber);font-size:15px;letter-spacing:1px;}
+.pc-rating-n{font-size:13px;color:var(--s500);margin-left:5px;}
+.pc-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0;}
+.pc-stat{background:var(--s50);border-radius:12px;padding:11px 13px;}
+.pc-stat-val{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--s900);}
+.pc-stat-lbl{font-size:11px;color:var(--s500);margin-top:2px;}
+.pc-bar-wrap{margin-bottom:10px;}
+.pc-bar-lbl{display:flex;justify-content:space-between;font-size:11px;color:var(--s500);margin-bottom:5px;}
+.pc-bar-track{height:6px;background:var(--s100);border-radius:100px;overflow:hidden;}
+.pc-bar-fill{height:100%;border-radius:100px;}
+.pc-bar-green{background:linear-gradient(90deg,var(--green),#059669);}
+.pc-bar-sky{background:linear-gradient(90deg,var(--sky),var(--sky-dark));}
+.pc-actions{display:flex;gap:8px;margin-top:16px;}
+.pc-btn{flex:1;padding:10px;border-radius:11px;font-size:12px;font-weight:700;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.pc-btn-rate{background:linear-gradient(135deg,var(--amber),var(--yellow));color:#fff;}
+.pc-btn-rate:hover{box-shadow:0 4px 14px rgba(245,158,11,.35);}
+.pc-btn-view{background:var(--s100);color:var(--s700);}
+.pc-btn-view:hover{background:var(--s200);}
+
+/* ── SETTINGS ── */
+.settings-grid{display:grid;grid-template-columns:220px 1fr;gap:24px;}
+.settings-nav{background:#fff;border:1px solid var(--s200);border-radius:18px;padding:12px;align-self:start;position:sticky;top:88px;}
+.sn-item{padding:10px 14px;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;color:var(--s600);transition:all .2s;margin-bottom:2px;}
+.sn-item:hover{background:var(--s50);color:var(--s900);}
+.sn-item.active{background:rgba(56,189,248,.08);color:var(--sky-dark);font-weight:700;}
+.settings-content{display:flex;flex-direction:column;gap:20px;}
+.settings-section{background:#fff;border:1px solid var(--s200);border-radius:18px;padding:28px;}
+.settings-section h3{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--s900);margin-bottom:6px;letter-spacing:-.3px;}
+.settings-section p{font-size:13px;color:var(--s500);margin-bottom:24px;line-height:1.5;}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--s100);}
+.setting-row:last-child{border-bottom:none;}
+.setting-label{font-size:14px;font-weight:600;color:var(--s900);}
+.setting-desc{font-size:12px;color:var(--s500);margin-top:3px;}
+.toggle{width:44px;height:24px;border-radius:12px;background:var(--s200);cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;}
+.toggle.on{background:var(--sky-dark);}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.2);}
+.toggle.on::after{transform:translateX(20px);}
+.save-btn{background:linear-gradient(135deg,var(--sky-dark),var(--sky-mid));color:#fff;padding:12px 28px;border-radius:12px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;box-shadow:0 4px 14px rgba(3,105,161,.25);}
+.save-btn:hover{box-shadow:0 8px 24px rgba(3,105,161,.4);transform:translateY(-1px);}
+
+/* ── ANALYTICS ── */
+.analytics-grid{display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-bottom:20px;}
+.chart-card{background:#fff;border:1px solid var(--s200);border-radius:18px;padding:24px;}
+.chart-bars{display:flex;align-items:flex-end;gap:8px;height:180px;margin-top:20px;}
+.chart-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;}
+.chart-bar{width:100%;border-radius:6px 6px 0 0;transition:all .3s;}
+.chart-bar:hover{filter:brightness(1.1);}
+.chart-bar-lbl{font-size:10px;color:var(--s500);font-weight:500;}
+.chart-bar-val{font-size:10px;font-weight:700;color:var(--s700);}
+.occ-chart{display:flex;flex-direction:column;gap:14px;margin-top:20px;}
+.occ-row{display:flex;align-items:center;gap:12px;}
+.occ-prop{font-size:12px;color:var(--s700);font-weight:600;width:130px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.occ-bar-track{flex:1;height:8px;background:var(--s100);border-radius:100px;overflow:hidden;}
+.occ-bar-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--sky),var(--sky-dark));}
+.occ-val{font-size:12px;font-weight:700;color:var(--s900);width:36px;text-align:right;}
+
+/* ── TOAST ── */
+.toast-wrap{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:800;display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none;}
+.toast{background:var(--s900);color:#fff;padding:12px 22px;border-radius:14px;font-size:13px;font-weight:600;box-shadow:0 8px 32px rgba(0,0,0,.3);display:flex;align-items:center;gap:10px;pointer-events:none;animation:toast-in .3s ease;max-width:360px;text-align:center;}
+@keyframes toast-in{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.toast.success{background:linear-gradient(135deg,#065F46,#047857);}
+.toast.warning{background:linear-gradient(135deg,#92400E,#B45309);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1100px){
+  .stats-grid{grid-template-columns:repeat(3,1fr);}
+  .nearby-page{grid-template-columns:1fr;}
+  .map-wrap{position:relative;top:0;}
+  .settings-grid{grid-template-columns:1fr;}
+  .analytics-grid{grid-template-columns:1fr;}
+  .quick-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+}
+@media(max-width:900px){
+  .demo-bar{padding:10px 16px;}
+  .demo-menu-btn{display:flex;}
+  .demo-bar-left{flex:1;min-width:0;}
+  .demo-bar-right{display:none;}
+  .demo-bar-tools{display:flex;}
+  .sidebar{width:min(86vw,320px);transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);box-shadow:18px 0 48px rgba(0,0,0,.3);}
+  .app-shell{padding-top:0;}
+  .main{margin-left:0;padding:10px 16px 90px;}
+  .quick-grid{display:grid;}
+  .desktop-stats{display:none;}
+  .dashboard-hero{grid-template-columns:1fr;}
+}
+@media(max-width:768px){
+  .demo-bar{padding:10px 16px;}
+  .mob-toggle{display:none;}
+  .topbar{align-items:flex-start;margin-bottom:14px;}
+  .tb-left h1{font-size:24px;}
+  .tb-right{width:100%;gap:8px;}
+  .tb-btn,.weather-chip,.notif-btn{min-height:40px;}
+  .weather-chip{padding:6px 10px;font-size:12px;gap:4px;border-radius:10px;width:auto;}
+  .weather-chip .wc-icon{font-size:12px;}
+  #page-dashboard .topbar .tb-right{align-items:center;}
+  #page-dashboard .topbar .dashboard-add-btn{display:none;}
+  #page-dashboard .topbar .weather-chip,
+  #page-dashboard .topbar .notif-btn{display:none;}
+  .mobile-grid-action{display:block;}
+  .dash-two,.dash-three{grid-template-columns:1fr;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+  .nearby-page{grid-template-columns:1fr;}
+  .form-row,.mb-form-row{grid-template-columns:1fr;}
+  .props-grid,.issues-grid,.perf-grid{grid-template-columns:1fr;}
+  .bk-card{gap:12px;padding:16px;}
+  .bk-actions{margin-left:0;width:100%;justify-content:flex-end;}
+  .map-area{height:360px;}
+  .cc-stats{grid-template-columns:1fr 1fr 1fr;}
+  .settings-nav{position:relative;top:0;overflow-x:auto;display:flex;gap:8px;}
+  .sn-item{white-space:nowrap;margin-bottom:0;}
+  .settings-section{padding:22px 18px;}
+  .modal{padding:26px 20px;max-width:none;}
+  .modal-btns,.cc-actions,.pc-actions{flex-direction:column;}
+  .img-grid{grid-template-columns:repeat(2,1fr);}
+  .prop-table{display:table;table-layout:fixed;white-space:normal;}
+  .prop-table th:nth-child(3),
+  .prop-table th:nth-child(5),
+  .prop-table th:nth-child(6),
+  .prop-table th:nth-child(7),
+  .prop-table td:nth-child(3),
+  .prop-table td:nth-child(5),
+  .prop-table td:nth-child(6),
+  .prop-table td:nth-child(7){display:none;}
+  .prop-table th,.prop-table td{padding:12px 10px;vertical-align:top;}
+  .prop-table th:nth-child(1),.prop-table td:nth-child(1){width:48%;}
+  .prop-table th:nth-child(2),.prop-table td:nth-child(2){width:22%;}
+  .prop-table th:nth-child(4),.prop-table td:nth-child(4){width:30%;}
+  .dashboard-hero{padding:24px 20px;border-radius:22px;}
+  .dh-title{font-size:28px;}
+  .quick-stat{padding:16px 14px;}
+  .quick-stat .sc-val{font-size:26px;}
+  .quick-stat .sc-lbl{font-size:11px;}
+  .quick-stat .sc-change{min-height:0;}
+  .flow-grid.flow-grid-four{grid-template-columns:1fr 1fr;gap:16px;padding:8px 0;}
+  .flow-grid.flow-grid-three{grid-template-columns:1fr;gap:14px;}
+  .flow-grid.flow-grid-four::before{display:none;}
+  .flow-step{padding:0;}
+  .flow-step-circle{width:68px;height:68px;font-size:24px;margin-bottom:12px;}
+  .flow-step-card{padding:18px 16px;text-align:left;}
+  .flow-step-card .flow-step-title,.flow-step-card .flow-step-text{text-align:left;}
+  .app-footer{padding:18px 0 4px;}
+}
+@media(max-width:480px){
+  .app-shell{padding-top:0;}
+  .demo-bar{position:sticky;top:0;}
+  .demo-bar-left,.demo-bar-right{width:100%;justify-content:flex-start;}
+  .demo-bar{gap:10px;}
+  .demo-bar-left{font-size:12px;max-width:calc(100% - 108px);}
+  .demo-bar-tools{gap:6px;}
+  .demo-weather{padding:6px 8px;font-size:11px;}
+  .demo-notif{width:34px;height:34px;font-size:14px;}
+  .demo-menu-btn{width:38px;height:38px;}
+  .main{padding:6px 12px 88px;}
+  .stats-grid{grid-template-columns:1fr;}
+  .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+  .topbar{gap:8px;margin-bottom:12px;}
+  .tb-right{flex-direction:column;align-items:stretch;}
+  .tb-btn,.weather-chip{width:100%;justify-content:center;}
+  #page-dashboard .tb-right{flex-direction:row;align-items:center;justify-content:flex-start;}
+  #page-dashboard .weather-chip{width:auto;max-width:max-content;}
+  #page-dashboard .notif-btn{width:36px;height:36px;border-radius:10px;font-size:15px;}
+  #page-dashboard .tb-left p{margin-top:1px;}
+  .mobile-grid-action{margin:0 0 16px;}
+  .card,.chart-card,.perf-card,.settings-section,.issue-card{padding:18px 16px;}
+  .bk-card{padding:14px;}
+  .bk-info,.bk-actions{min-width:100%;}
+  .bk-actions{justify-content:stretch;}
+  .bk-actions .icon-btn{flex:1;}
+  .map-area{height:300px;}
+  .cc-top,.pc-top,.setting-row,.iss-footer{align-items:flex-start;flex-direction:column;}
+  .cc-status{margin-left:0;}
+  .cc-stats,.pc-stats{grid-template-columns:1fr 1fr;}
+  .occ-row{gap:8px;}
+  .occ-prop{width:88px;}
+  .toast{max-width:calc(100vw - 32px);padding:12px 16px;}
+  .dashboard-hero{padding:20px 16px;}
+  .dh-title{font-size:24px;}
+  .dh-actions{flex-direction:column;}
+  .dh-actions .tb-btn{width:100%;justify-content:center;}
+  .dh-metrics{grid-template-columns:1fr;}
+  .quick-stat{padding:14px 12px;border-radius:18px;}
+  .quick-stat .sc-icon{width:38px;height:38px;border-radius:12px;font-size:18px;margin-bottom:10px;}
+  .flow-grid{gap:12px;}
+  .flow-grid.flow-grid-four{grid-template-columns:1fr;}
+  .flow-step-circle{width:62px;height:62px;font-size:22px;}
+  .flow-step-card{padding:16px 14px;border-radius:16px;}
+  .flow-step-title{font-size:13px;}
+  .flow-step-text{font-size:11px;line-height:1.5;}
+  .quick-stat .sc-val{font-size:22px;}
+  .quick-stat .sc-lbl{font-size:10px;line-height:1.35;}
+  .quick-stat .sc-change{font-size:10px;margin-top:6px;}
+  .prop-table th{font-size:9px;letter-spacing:1.2px;padding:0 8px 10px;}
+  .prop-table td{padding:11px 8px;font-size:12px;}
+  .prop-table .p-name{font-size:12px;}
+  .prop-table .p-addr{font-size:10px;line-height:1.4;}
+  .app-footer{margin-top:22px;padding:16px 0 2px;align-items:flex-start;}
+  .app-footer-brand{font-size:12px;}
+  .app-footer-copy{font-size:11px;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div style="position:absolute;bottom:0;left:0;right:0;height:180px;opacity:.14;">
+    <svg viewBox="0 0 1440 180" preserveAspectRatio="none" width="100%" height="180" xmlns="http://www.w3.org/2000/svg">
+      <g fill="rgba(56,189,248,.9)"><rect x="20" y="60" width="48" height="120"/><rect x="25" y="40" width="38" height="20"/><rect x="80" y="90" width="55" height="90"/><rect x="145" y="30" width="46" height="150"/><rect x="148" y="10" width="40" height="20"/><rect x="200" y="80" width="50" height="100"/><rect x="260" y="45" width="65" height="135"/><rect x="263" y="25" width="59" height="20"/><rect x="335" y="20" width="50" height="160"/><rect x="338" y="0" width="44" height="20"/><rect x="395" y="95" width="44" height="85"/><rect x="449" y="50" width="56" height="130"/><rect x="515" y="70" width="48" height="110"/><rect x="573" y="18" width="56" height="162"/><rect x="576" y="-2" width="50" height="20"/><rect x="639" y="85" width="44" height="95"/><rect x="693" y="42" width="62" height="138"/><rect x="765" y="62" width="48" height="118"/><rect x="823" y="26" width="54" height="154"/><rect x="826" y="6" width="48" height="20"/><rect x="887" y="98" width="46" height="82"/><rect x="943" y="46" width="58" height="134"/><rect x="1011" y="66" width="48" height="114"/><rect x="1069" y="22" width="54" height="158"/><rect x="1133" y="88" width="44" height="92"/><rect x="1187" y="38" width="62" height="142"/><rect x="1259" y="58" width="48" height="122"/><rect x="1317" y="28" width="56" height="152"/><rect x="1384" y="78" width="56" height="102"/></g>
+    </svg>
+  </div>
+  <div class="ld-plane">
+    <svg width="36" height="36" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 0 10px rgba(56,189,248,.7))">
+      <path d="M28 6 L34 22 L50 20 L50 26 L34 30 L31 42 L37 44 L37 48 L28 45 L19 48 L19 44 L25 42 L22 30 L6 26 L6 20 L22 22 Z" fill="#38BDF8"/>
+      <ellipse cx="28" cy="20" rx="4" ry="3" fill="#F97316"/>
+    </svg>
+  </div>
+  <div class="ld-logo">Air<span>ly</span></div>
+  <div class="ld-tagline">Live Demo — All features active</div>
+  <div class="ld-bar-wrap"><div class="ld-bar"></div></div>
+  <div class="ld-msg" id="ld-msg">Loading demo data...</div>
+</div>
+
+<!-- DEMO BANNER -->
+<div class="demo-bar">
+  <div class="demo-bar-left"><span class="demo-pill">DEMO</span>This is a fully interactive prototype. All features work with sample data.</div>
+  <div class="demo-bar-right"><a href="index.html#waitlist" class="demo-bar-cta">Join Waitlist ✈</a></div>
+  <div class="demo-bar-tools">
+    <div class="demo-weather"><span class="wc-icon">🌤️</span><span>28°C</span></div>
+    <div class="demo-notif" onclick="showToast('🔔 5 new notifications','success')">🔔<div class="notif-dot"></div></div>
+  </div>
+  <button class="demo-menu-btn" id="demo-menu-btn" type="button" aria-label="Open app navigation" aria-controls="sidebar" aria-expanded="false" onclick="toggleSidebar()"><span></span></button>
+</div>
+
+<!-- APP SHELL -->
+<div class="app-shell">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo"><div class="sl-text">✈ Airly</div><div class="sl-tag">Host Dashboard</div></div>
+  <a href="index.html" class="nav-item nav-link-item" onclick="toggleSidebar()"><span class="ni-icon">←</span>Back to Landing</a>
+  <div class="sec-lbl">MAIN</div>
+  <div class="nav-item active" onclick="goTo('dashboard',this)"><span class="ni-icon">🏠</span>Dashboard</div>
+  <div class="nav-item" onclick="goTo('bookings',this)"><span class="ni-icon">📅</span>Bookings<span class="ni-badge">3</span></div>
+  <div class="nav-item" onclick="goTo('properties',this)"><span class="ni-icon">🏡</span>Properties<span class="ni-badge g">4</span></div>
+  <div class="nav-item" onclick="goTo('tasks',this)"><span class="ni-icon">🧹</span>Cleaning Tasks<span class="ni-badge">2</span></div>
+  <div class="sec-lbl">GUESTS</div>
+  <div class="nav-item" onclick="goTo('issues',this)"><span class="ni-icon">⚠️</span>Issues<span class="ni-badge r">3</span></div>
+  <div class="nav-item" onclick="goTo('contacts',this)"><span class="ni-icon">📞</span>Support Contacts</div>
+  <div class="sec-lbl">GROW</div>
+  <div class="nav-item" onclick="goTo('nearby',this)"><span class="ni-icon">📍</span>Find Cleaners Nearby</div>
+  <div class="nav-item" onclick="goTo('performance',this)"><span class="ni-icon">⭐</span>Cleaner Performance</div>
+  <div class="nav-item" onclick="goTo('analytics',this)"><span class="ni-icon">📊</span>Analytics</div>
+  <div class="sec-lbl">ACCOUNT</div>
+  <div class="nav-item" onclick="goTo('settings',this)"><span class="ni-icon">⚙️</span>Settings</div>
+  <div class="sidebar-bottom">
+    <div class="s-user"><div class="s-avatar">R</div><div><div class="s-name">Rahul Mehta</div><div class="s-plan">⭐ STARTER PLAN</div></div></div>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main" id="main-content">
+
+<!-- ═══ DASHBOARD ═══ -->
+<div class="page active" id="page-dashboard">
+  <div class="topbar">
+    <div class="tb-left"><h1>Good morning, Rahul 👋</h1><p>Thursday, 12 March 2026 · 4 properties active</p></div>
+    <div class="tb-right">
+      <div class="weather-chip"><span class="wc-icon">🌤️</span><span>28°C · Goa</span></div>
+      <div class="notif-btn" onclick="showToast('🔔 5 new notifications','success')">🔔<div class="notif-dot"></div></div>
+      <button class="tb-btn tb-fill dashboard-add-btn" onclick="openModal('modal-add-prop')">+ Add Property</button>
+    </div>
+  </div>
+  <div class="stats-grid quick-grid">
+    <div class="stat-card quick-stat sc-blue qs-blue" onclick="goTo('properties',null)"><div class="sc-icon">🏠</div><div class="sc-val">4</div><div class="sc-lbl">Total Properties</div><div class="sc-change sc-up">1 new this month</div></div>
+    <div class="stat-card quick-stat sc-orange qs-orange" onclick="goTo('bookings',null)"><div class="sc-icon">📅</div><div class="sc-val">3</div><div class="sc-lbl">Bookings Today</div><div class="sc-change sc-up">2 in · 1 out</div></div>
+    <div class="stat-card quick-stat sc-yellow qs-yellow" onclick="goTo('tasks',null)"><div class="sc-icon">🧹</div><div class="sc-val">2</div><div class="sc-lbl">Pending Cleaning</div><div class="sc-change sc-down">Needs attention</div></div>
+    <div class="stat-card quick-stat sc-green qs-green"><div class="sc-icon">✅</div><div class="sc-val">2</div><div class="sc-lbl">Available Now</div><div class="sc-change sc-up">Ready to book</div></div>
+    <div class="stat-card quick-stat sc-purple qs-purple" onclick="goTo('analytics',null)"><div class="sc-icon">💰</div><div class="sc-val">₹84k</div><div class="sc-lbl">Revenue This Month</div><div class="sc-change sc-up">18% vs last</div></div>
+    <div class="stat-card quick-stat sc-red qs-red" onclick="goTo('issues',null)"><div class="sc-icon">⚠️</div><div class="sc-val">3</div><div class="sc-lbl">Open Issues</div><div class="sc-change sc-down">2 urgent</div></div>
+  </div>
+  <div class="mobile-grid-action">
+    <button class="tb-btn tb-fill" onclick="openModal('modal-add-prop')">+ Add Property</button>
+  </div>
+  <div class="dashboard-hero">
+    <div class="dh-copy">
+      <div class="dh-kicker">Today's Control Center</div>
+      <div class="dh-title">Bookings, cleanings, and guest issues are all in sync.</div>
+      <div class="dh-text">You have two check-ins today, one checkout already completed, and the next iCal sync is less than an hour away. Use the dashboard to act fast without jumping between apps.</div>
+      <div class="dh-actions">
+        <button class="tb-btn tb-fill" onclick="openModal('modal-add-booking')">+ Add Booking</button>
+        <button class="tb-btn tb-outline" onclick="goTo('tasks',null)">View Cleaning Tasks</button>
+      </div>
+    </div>
+    <div class="dh-panel">
+      <div class="dh-panel-top">Today at a glance</div>
+      <div class="dh-metrics">
+        <div class="dh-metric"><div class="dh-metric-val">2</div><div class="dh-metric-lbl">Check-ins</div></div>
+        <div class="dh-metric"><div class="dh-metric-val">1</div><div class="dh-metric-lbl">Checkout done</div></div>
+        <div class="dh-metric"><div class="dh-metric-val">48m</div><div class="dh-metric-lbl">Next sync</div></div>
+        <div class="dh-metric"><div class="dh-metric-val">3</div><div class="dh-metric-lbl">Open issues</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="sync-bar">
+    <div class="sync-live"><div class="sync-dot"></div><div class="sync-live-text">SYNC ACTIVE</div></div>
+    <div class="sync-meta">Last synced 12 mins ago · Airbnb · Booking.com · VRBO · 4 properties</div>
+    <div class="sync-next">Next sync in 48 mins</div>
+  </div>
+  <div class="stats-grid desktop-stats">
+    <div class="stat-card sc-blue" onclick="goTo('properties',null)"><div class="sc-icon">🏠</div><div class="sc-val">4</div><div class="sc-lbl">Total Properties</div><div class="sc-change sc-up">↑ 1 this month</div></div>
+    <div class="stat-card sc-orange" onclick="goTo('bookings',null)"><div class="sc-icon">📅</div><div class="sc-val">3</div><div class="sc-lbl">Bookings Today</div><div class="sc-change sc-up">2 in · 1 out</div></div>
+    <div class="stat-card sc-yellow" onclick="goTo('tasks',null)"><div class="sc-icon">🧹</div><div class="sc-val">2</div><div class="sc-lbl">Pending Cleaning</div><div class="sc-change sc-down">Needs attention</div></div>
+    <div class="stat-card sc-green"><div class="sc-icon">✅</div><div class="sc-val">2</div><div class="sc-lbl">Available Now</div><div class="sc-change sc-up">Ready to book</div></div>
+    <div class="stat-card sc-purple" onclick="goTo('analytics',null)"><div class="sc-icon">💰</div><div class="sc-val">₹84k</div><div class="sc-lbl">Revenue This Month</div><div class="sc-change sc-up">↑ 18% vs last</div></div>
+    <div class="stat-card sc-red" onclick="goTo('issues',null)"><div class="sc-icon">⚠️</div><div class="sc-val">3</div><div class="sc-lbl">Open Issues</div><div class="sc-change sc-down">2 urgent</div></div>
+  </div>
+  <div class="dash-row dash-two">
+    <div class="card">
+      <div class="card-hdr"><div class="card-title">Today's Schedule</div><div class="card-action" onclick="goTo('bookings',null)">Full Calendar →</div></div>
+      <div class="ck-card ck-in"><div class="ck-icon ck-icon-in">🛬</div><div><div class="ck-lbl ck-lbl-in">CHECK-IN · 2:00 PM</div><div class="ck-guest">Arjun & Priya Sharma</div><div class="ck-detail">🏠 Beach Villa Calangute · 4 nights · ₹18,000</div></div></div>
+      <div class="ck-card ck-in"><div class="ck-icon ck-icon-in">🛬</div><div><div class="ck-lbl ck-lbl-in">CHECK-IN · 4:00 PM</div><div class="ck-guest">Vikram Nair</div><div class="ck-detail">🏠 Studio Baga · 2 nights · ₹6,400</div></div></div>
+      <div class="ck-card ck-out"><div class="ck-icon ck-icon-out">🛫</div><div><div class="ck-lbl ck-lbl-out">CHECKOUT · 11:00 AM ✓</div><div class="ck-guest">Meera Krishnan</div><div class="ck-detail">🏠 Sunset Villa · Cleaning task auto-created</div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><div class="card-title">Recent Activity</div><div class="card-action">View All →</div></div>
+      <div class="act-item"><div class="act-dot" style="background:var(--green)"></div><div class="act-text">New booking synced from Airbnb — <strong>Beach Villa</strong>, Mar 18–22</div><div class="act-time">8m</div></div>
+      <div class="act-item"><div class="act-dot" style="background:var(--amber)"></div><div class="act-text">Cleaning task at <strong>Sunset Villa</strong> — Ramesh notified via WhatsApp</div><div class="act-time">42m</div></div>
+      <div class="act-item"><div class="act-dot" style="background:var(--red)"></div><div class="act-text">Issue at <strong>Studio Baga</strong> — AC not cooling (High priority)</div><div class="act-time">1h</div></div>
+      <div class="act-item"><div class="act-dot" style="background:var(--sky)"></div><div class="act-text">Manual booking — <strong>Vikram Nair</strong> via WhatsApp, Studio Baga</div><div class="act-time">2h</div></div>
+      <div class="act-item"><div class="act-dot" style="background:var(--green)"></div><div class="act-text">Ramesh completed cleaning at <strong>Hilltop Cottage</strong> ⭐⭐⭐⭐⭐</div><div class="act-time">3h</div></div>
+    </div>
+  </div>
+  <div class="dash-row dash-three">
+    <div class="card">
+      <div class="card-hdr"><div class="card-title">Cleaning Tasks</div><div class="card-action" onclick="goTo('tasks',null)">View All →</div></div>
+      <div class="task-item"><div class="t-dot t-dot-pending"></div><div class="t-info"><div class="t-prop">Sunset Villa Anjuna</div><div class="t-cleaner">Assigned: Ramesh Kumar</div></div><span class="t-badge tb-pending">Pending</span></div>
+      <div class="task-item"><div class="t-dot t-dot-active"></div><div class="t-info"><div class="t-prop">Hilltop Cottage Mapusa</div><div class="t-cleaner">Priya Sharma</div></div><span class="t-badge tb-active">In Progress</span></div>
+      <div class="task-item"><div class="t-dot t-dot-done"></div><div class="t-info"><div class="t-prop">Beach Villa Calangute</div><div class="t-cleaner">Completed: Ramesh</div></div><span class="t-badge tb-done">Done ✓</span></div>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><div class="card-title">Top Cleaners 🏆</div><div class="card-action" onclick="goTo('performance',null)">Full Stats →</div></div>
+      <div class="lb-item"><div class="lb-rank">🥇</div><div class="lb-av" style="background:linear-gradient(135deg,var(--sky),var(--sky-dark))">R</div><div><div class="lb-name">Ramesh Kumar</div><div class="lb-tasks">42 tasks</div></div><div class="lb-right"><div class="lb-rating">4.8 ★</div><div class="lb-time">55 min avg</div></div></div>
+      <div class="lb-item"><div class="lb-rank">🥈</div><div class="lb-av" style="background:linear-gradient(135deg,#10B981,#059669)">P</div><div><div class="lb-name">Priya Sharma</div><div class="lb-tasks">28 tasks</div></div><div class="lb-right"><div class="lb-rating">4.3 ★</div><div class="lb-time">62 min avg</div></div></div>
+      <div class="lb-item"><div class="lb-rank">🥉</div><div class="lb-av" style="background:linear-gradient(135deg,#F97316,#EA580C)">S</div><div><div class="lb-name">Suresh Babu</div><div class="lb-tasks">19 tasks</div></div><div class="lb-right"><div class="lb-rating">4.1 ★</div><div class="lb-time">71 min avg</div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><div class="card-title">March 2026</div></div>
+      <div class="cal-grid">
+        <div class="cal-lbl">S</div><div class="cal-lbl">M</div><div class="cal-lbl">T</div><div class="cal-lbl">W</div><div class="cal-lbl">T</div><div class="cal-lbl">F</div><div class="cal-lbl">S</div>
+        <div class="cal-d cal-empty"></div><div class="cal-d cal-empty"></div><div class="cal-d cal-empty"></div><div class="cal-d cal-empty"></div><div class="cal-d cal-empty"></div><div class="cal-d cal-empty"></div><div class="cal-d">1</div>
+        <div class="cal-d">2</div><div class="cal-d cal-booked">3</div><div class="cal-d cal-booked">4</div><div class="cal-d cal-booked">5</div><div class="cal-d cal-booked">6</div><div class="cal-d cal-booked">7</div><div class="cal-d cal-checkout">8</div>
+        <div class="cal-d">9</div><div class="cal-d cal-booked">10</div><div class="cal-d cal-booked">11</div><div class="cal-d cal-today">12</div><div class="cal-d cal-booked">13</div><div class="cal-d cal-booked">14</div><div class="cal-d cal-checkout">15</div>
+        <div class="cal-d">16</div><div class="cal-d">17</div><div class="cal-d cal-booked">18</div><div class="cal-d cal-booked">19</div><div class="cal-d cal-booked">20</div><div class="cal-d cal-booked">21</div><div class="cal-d cal-checkout">22</div>
+        <div class="cal-d">23</div><div class="cal-d">24</div><div class="cal-d">25</div><div class="cal-d cal-booked">26</div><div class="cal-d cal-booked">27</div><div class="cal-d cal-booked">28</div><div class="cal-d cal-booked">29</div>
+        <div class="cal-d cal-booked">30</div><div class="cal-d cal-checkout">31</div>
+      </div>
+      <div class="cal-legend">
+        <div class="cl-item"><div class="cl-dot" style="background:rgba(56,189,248,.25)"></div>Booked</div>
+        <div class="cl-item"><div class="cl-dot" style="background:rgba(249,115,22,.25)"></div>Checkout</div>
+        <div class="cl-item"><div class="cl-dot" style="background:var(--sky-dark)"></div>Today</div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><div class="card-title">Your Properties</div><div class="card-action" onclick="goTo('properties',null)">Manage All →</div></div>
+    <table class="prop-table">
+      <thead><tr><th>Property</th><th>Status</th><th>Current Guest</th><th>Next Check-In</th><th>iCal Sync</th><th>Revenue (Mar)</th><th></th></tr></thead>
+      <tbody>
+        <tr><td><div class="p-name">Beach Villa Calangute</div><div class="p-addr">📍 Calangute, Goa · 3BR</div></td><td><span class="pill pill-booked">Booked</span></td><td>Arjun Sharma · Mar 12–16</td><td>Mar 18–22</td><td><div class="sync-info-sm"><div class="s-dot"></div>12 min ago</div></td><td><strong>₹38,000</strong></td><td><div style="display:flex;gap:6px"><div class="icon-btn">✏️</div><div class="icon-btn">📋</div></div></td></tr>
+        <tr><td><div class="p-name">Sunset Villa Anjuna</div><div class="p-addr">📍 Anjuna, Goa · 2BR</div></td><td><span class="pill pill-clean">Cleaning</span></td><td>Checked out today</td><td>Mar 16–19</td><td><div class="sync-info-sm"><div class="s-dot"></div>12 min ago</div></td><td><strong>₹24,000</strong></td><td><div style="display:flex;gap:6px"><div class="icon-btn">✏️</div><div class="icon-btn">📋</div></div></td></tr>
+        <tr><td><div class="p-name">Studio Apartment Baga</div><div class="p-addr">📍 Baga, Goa · Studio</div></td><td><span class="pill pill-booked">Booked</span></td><td>Vikram Nair · Mar 12–14</td><td>Mar 20–23</td><td><div class="sync-info-sm"><div class="s-dot"></div>12 min ago</div></td><td><strong>₹14,400</strong></td><td><div style="display:flex;gap:6px"><div class="icon-btn">✏️</div><div class="icon-btn">📋</div></div></td></tr>
+        <tr><td><div class="p-name">Hilltop Cottage Mapusa</div><div class="p-addr">📍 Mapusa, Goa · 4BR</div></td><td><span class="pill pill-avail">Available</span></td><td>—</td><td>Mar 26–30</td><td><div class="sync-info-sm"><div class="s-dot"></div>12 min ago</div></td><td><strong>₹8,000</strong></td><td><div style="display:flex;gap:6px"><div class="icon-btn">✏️</div><div class="icon-btn">📋</div></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ PROPERTIES ═══ -->
+<div class="page" id="page-properties">
+  <div class="topbar">
+    <div class="tb-left"><h1>Properties 🏡</h1><p>4 properties · 2 booked · 1 cleaning · 1 available</p></div>
+    <div class="tb-right"><button class="tb-btn tb-outline" onclick="showToast('📤 iCal sync triggered for all properties!','success')">🔄 Sync All iCal</button><button class="tb-btn tb-fill" onclick="openModal('modal-add-prop')">+ Add Property</button></div>
+  </div>
+  <div class="prop-add-card" onclick="openModal('modal-add-prop')">
+    <div class="prop-add-icon">🏠</div>
+    <div class="prop-add-title">Add a New Property</div>
+    <div class="prop-add-sub">Paste your Airbnb iCal URL and bookings will sync automatically every hour</div>
+  </div>
+  <div class="props-grid">
+    <div class="prop-card"><div class="prop-img" style="background:linear-gradient(135deg,#0C4A6E,#0369A1)"><div class="prop-img-placeholder">🏖️</div><div class="prop-status-badge"><span class="pill pill-booked">Booked</span></div></div><div class="prop-body"><div class="prop-card-name">Beach Villa Calangute</div><div class="prop-card-addr">📍 Calangute, Goa · 3 Bedrooms · Max 6 guests</div><div class="prop-stats-row"><div class="prop-stat"><div class="prop-stat-val">₹38k</div><div class="prop-stat-lbl">Revenue Mar</div></div><div class="prop-stat"><div class="prop-stat-val">74%</div><div class="prop-stat-lbl">Occupancy</div></div><div class="prop-stat"><div class="prop-stat-val">4.9★</div><div class="prop-stat-lbl">Airbnb Rating</div></div></div></div><div class="prop-card-footer"><div class="prop-ical"><span class="s-dot"></span>iCal synced 12m ago</div><div style="display:flex;gap:6px"><div class="icon-btn" onclick="showToast('✏️ Edit property opened')">✏️</div><div class="icon-btn" onclick="showToast('🔗 iCal URL copied!')">🔗</div></div></div></div>
+    <div class="prop-card"><div class="prop-img" style="background:linear-gradient(135deg,#7C3AED,#5B21B6)"><div class="prop-img-placeholder">🌅</div><div class="prop-status-badge"><span class="pill pill-clean">Cleaning</span></div></div><div class="prop-body"><div class="prop-card-name">Sunset Villa Anjuna</div><div class="prop-card-addr">📍 Anjuna, Goa · 2 Bedrooms · Max 4 guests</div><div class="prop-stats-row"><div class="prop-stat"><div class="prop-stat-val">₹24k</div><div class="prop-stat-lbl">Revenue Mar</div></div><div class="prop-stat"><div class="prop-stat-val">61%</div><div class="prop-stat-lbl">Occupancy</div></div><div class="prop-stat"><div class="prop-stat-val">4.7★</div><div class="prop-stat-lbl">Airbnb Rating</div></div></div></div><div class="prop-card-footer"><div class="prop-ical"><span class="s-dot"></span>iCal synced 12m ago</div><div style="display:flex;gap:6px"><div class="icon-btn" onclick="showToast('✏️ Edit property opened')">✏️</div><div class="icon-btn" onclick="showToast('🔗 iCal URL copied!')">🔗</div></div></div></div>
+    <div class="prop-card"><div class="prop-img" style="background:linear-gradient(135deg,#065F46,#047857)"><div class="prop-img-placeholder">🏢</div><div class="prop-status-badge"><span class="pill pill-booked">Booked</span></div></div><div class="prop-body"><div class="prop-card-name">Studio Apartment Baga</div><div class="prop-card-addr">📍 Baga, Goa · Studio · Max 2 guests</div><div class="prop-stats-row"><div class="prop-stat"><div class="prop-stat-val">₹14k</div><div class="prop-stat-lbl">Revenue Mar</div></div><div class="prop-stat"><div class="prop-stat-val">55%</div><div class="prop-stat-lbl">Occupancy</div></div><div class="prop-stat"><div class="prop-stat-val">4.6★</div><div class="prop-stat-lbl">Airbnb Rating</div></div></div></div><div class="prop-card-footer"><div class="prop-ical"><span class="s-dot"></span>iCal synced 12m ago</div><div style="display:flex;gap:6px"><div class="icon-btn" onclick="showToast('✏️ Edit property opened')">✏️</div><div class="icon-btn" onclick="showToast('🔗 iCal URL copied!')">🔗</div></div></div></div>
+    <div class="prop-card"><div class="prop-img" style="background:linear-gradient(135deg,#92400E,#B45309)"><div class="prop-img-placeholder">🏔️</div><div class="prop-status-badge"><span class="pill pill-avail">Available</span></div></div><div class="prop-body"><div class="prop-card-name">Hilltop Cottage Mapusa</div><div class="prop-card-addr">📍 Mapusa, Goa · 4 Bedrooms · Max 8 guests</div><div class="prop-stats-row"><div class="prop-stat"><div class="prop-stat-val">₹8k</div><div class="prop-stat-lbl">Revenue Mar</div></div><div class="prop-stat"><div class="prop-stat-val">32%</div><div class="prop-stat-lbl">Occupancy</div></div><div class="prop-stat"><div class="prop-stat-val">4.5★</div><div class="prop-stat-lbl">Airbnb Rating</div></div></div></div><div class="prop-card-footer"><div class="prop-ical"><span class="s-dot"></span>iCal synced 12m ago</div><div style="display:flex;gap:6px"><div class="icon-btn" onclick="showToast('✏️ Edit property opened')">✏️</div><div class="icon-btn" onclick="showToast('🔗 iCal URL copied!')">🔗</div></div></div></div>
+  </div>
+</div>
+
+<!-- ═══ BOOKINGS ═══ -->
+<div class="page" id="page-bookings">
+  <div class="topbar">
+    <div class="tb-left"><h1>Bookings 📅</h1><p>All bookings across 4 properties · March 2026</p></div>
+    <div class="tb-right"><button class="tb-btn tb-outline" onclick="showToast('📥 CSV export started!','success')">📥 Export CSV</button><button class="tb-btn tb-fill" onclick="openModal('modal-add-booking')">+ Add Manual Booking</button></div>
+  </div>
+  <div class="booking-tabs">
+    <div class="b-tab active" onclick="activateTab(this)">All (7)</div>
+    <div class="b-tab" onclick="activateTab(this)">Upcoming (3)</div>
+    <div class="b-tab" onclick="activateTab(this)">Active (2)</div>
+    <div class="b-tab" onclick="activateTab(this)">Completed (2)</div>
+    <div class="b-tab" onclick="activateTab(this)">Cancelled (0)</div>
+  </div>
+  <div class="filters-row">
+    <input class="f-input" placeholder="🔍 Search guest name or property..."/>
+    <select class="f-select"><option>All Properties</option><option>Beach Villa</option><option>Sunset Villa</option><option>Studio Baga</option><option>Hilltop Cottage</option></select>
+    <select class="f-select"><option>All Sources</option><option>Airbnb</option><option>Booking.com</option><option>VRBO</option><option>WhatsApp</option><option>Phone</option><option>Walk-in</option></select>
+    <select class="f-select"><option>This Month</option><option>Last Month</option><option>Custom</option></select>
+  </div>
+  <div class="bk-card"><div class="bk-avatar" style="background:linear-gradient(135deg,#7C3AED,#5B21B6)">A</div><div class="bk-info"><div class="bk-guest">Arjun & Priya Sharma</div><div class="bk-prop">🏠 Beach Villa Calangute</div><div class="bk-dates">📅 Mar 12 → Mar 16 · 4 nights</div><span class="bk-source src-airbnb">🏠 Airbnb</span></div><div style="text-align:right"><div class="bk-amount">₹18,000</div><div class="bk-nights">4 nights</div><span class="pill pill-booked" style="margin-top:6px;display:block;">Active</span></div><div class="bk-actions"><div class="icon-btn" onclick="showToast('👁 Booking details opened')">👁</div><div class="icon-btn" onclick="showToast('✏️ Edit booking opened')">✏️</div><div class="icon-btn" onclick="showToast('🗑 Confirm delete?','warning')">🗑</div></div></div>
+  <div class="bk-card"><div class="bk-avatar" style="background:linear-gradient(135deg,#25D366,#128C7E)">V</div><div class="bk-info"><div class="bk-guest">Vikram Nair</div><div class="bk-prop">🏠 Studio Apartment Baga</div><div class="bk-dates">📅 Mar 12 → Mar 14 · 2 nights</div><span class="bk-source src-wa">💬 WhatsApp</span></div><div style="text-align:right"><div class="bk-amount">₹6,400</div><div class="bk-nights">2 nights</div><span class="pill pill-booked" style="margin-top:6px;display:block;">Active</span></div><div class="bk-actions"><div class="icon-btn" onclick="showToast('👁 Booking details opened')">👁</div><div class="icon-btn" onclick="showToast('✏️ Edit booking opened')">✏️</div></div></div>
+  <div class="bk-card"><div class="bk-avatar" style="background:linear-gradient(135deg,#003580,#1a56a0)">S</div><div class="bk-info"><div class="bk-guest">Santosh & Family</div><div class="bk-prop">🏠 Hilltop Cottage Mapusa</div><div class="bk-dates">📅 Mar 26 → Mar 30 · 4 nights</div><span class="bk-source src-bc">🌐 Booking.com</span></div><div style="text-align:right"><div class="bk-amount">₹22,000</div><div class="bk-nights">4 nights</div><span class="pill pill-avail" style="margin-top:6px;display:block;">Upcoming</span></div><div class="bk-actions"><div class="icon-btn" onclick="showToast('👁 Booking details opened')">👁</div><div class="icon-btn" onclick="showToast('✏️ Edit booking opened')">✏️</div></div></div>
+  <div class="bk-card"><div class="bk-avatar" style="background:linear-gradient(135deg,#6366F1,#4F46E5)">M</div><div class="bk-info"><div class="bk-guest">Meera Krishnan</div><div class="bk-prop">🏠 Sunset Villa Anjuna</div><div class="bk-dates">📅 Mar 8 → Mar 12 · 4 nights</div><span class="bk-source src-direct">✈ Direct</span></div><div style="text-align:right"><div class="bk-amount">₹16,800</div><div class="bk-nights">4 nights</div><span class="pill" style="background:var(--s100);color:var(--s500);margin-top:6px;display:block;">Completed</span></div><div class="bk-actions"><div class="icon-btn" onclick="showToast('👁 Booking details opened')">👁</div></div></div>
+  <div class="bk-card"><div class="bk-avatar" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9)">R</div><div class="bk-info"><div class="bk-guest">Rohan Desai</div><div class="bk-prop">🏠 Beach Villa Calangute</div><div class="bk-dates">📅 Mar 18 → Mar 22 · 4 nights</div><span class="bk-source src-airbnb">🏠 Airbnb</span></div><div style="text-align:right"><div class="bk-amount">₹19,200</div><div class="bk-nights">4 nights</div><span class="pill pill-avail" style="margin-top:6px;display:block;">Upcoming</span></div><div class="bk-actions"><div class="icon-btn" onclick="showToast('👁 Booking details opened')">👁</div><div class="icon-btn" onclick="showToast('✏️ Edit booking opened')">✏️</div></div></div>
+</div>
+
+<!-- ═══ CLEANING TASKS ═══ -->
+<div class="page" id="page-tasks">
+  <div class="topbar">
+    <div class="tb-left"><h1>Cleaning Tasks 🧹</h1><p>2 pending · 1 in progress · 3 completed this week</p></div>
+    <div class="tb-right"><button class="tb-btn tb-fill" onclick="showToast('🧹 Manual cleaning task created!','success')">+ Create Task</button></div>
+  </div>
+  <div class="dash-row dash-two" style="margin-bottom:20px;">
+    <div class="card">
+      <div class="card-hdr"><div class="card-title">Active & Pending Tasks</div></div>
+      <div class="task-item"><div class="t-dot t-dot-pending"></div><div class="t-info"><div class="t-prop">Sunset Villa Anjuna</div><div class="t-cleaner">👤 Ramesh Kumar · Notified via WhatsApp ✓</div></div><div style="text-align:right"><span class="t-badge tb-pending">Pending</span><div style="font-size:11px;color:var(--s400);margin-top:4px;">Due: Today 1 PM</div></div></div>
+      <div class="task-item"><div class="t-dot t-dot-active"></div><div class="t-info"><div class="t-prop">Hilltop Cottage Mapusa</div><div class="t-cleaner">👤 Priya Sharma · Started 10:45 AM</div></div><div style="text-align:right"><span class="t-badge tb-active">In Progress</span><div style="font-size:11px;color:var(--s400);margin-top:4px;">Running 48 min</div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><div class="card-title">Completed This Week</div></div>
+      <div class="task-item"><div class="t-dot t-dot-done"></div><div class="t-info"><div class="t-prop">Beach Villa Calangute</div><div class="t-cleaner">Ramesh Kumar · 55 min · ⭐⭐⭐⭐⭐</div></div><span class="t-badge tb-done">Done ✓</span></div>
+      <div class="task-item"><div class="t-dot t-dot-done"></div><div class="t-info"><div class="t-prop">Studio Apartment Baga</div><div class="t-cleaner">Suresh Babu · 72 min · ⭐⭐⭐⭐</div></div><span class="t-badge tb-done">Done ✓</span></div>
+      <div class="task-item"><div class="t-dot t-dot-done"></div><div class="t-info"><div class="t-prop">Sunset Villa Anjuna</div><div class="t-cleaner">Ramesh Kumar · 48 min · ⭐⭐⭐⭐⭐</div></div><span class="t-badge tb-done">Done ✓</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><div class="card-title">How Cleaning Automation Works</div></div>
+    <div class="flow-grid flow-grid-four">
+      <div class="flow-step"><div class="flow-step-circle" style="border-color:rgba(249,115,22,.3);">🛫</div><div class="flow-step-title">Guest Checks Out</div><div class="flow-step-text">System detects checkout from calendar or manual.</div></div>
+      <div class="flow-step"><div class="flow-step-circle" style="border-color:rgba(56,189,248,.3);">📋</div><div class="flow-step-title">Task Auto-Created</div><div class="flow-step-text">Cleaning task is generated and assigned automatically.</div></div>
+      <div class="flow-step"><div class="flow-step-circle" style="border-color:rgba(16,185,129,.3);">💬</div><div class="flow-step-title">Cleaner Notified</div><div class="flow-step-text">WhatsApp and SMS go out with the task link. No app needed.</div></div>
+      <div class="flow-step"><div class="flow-step-circle" style="border-color:rgba(16,185,129,.3);">✅</div><div class="flow-step-title">Property Available</div><div class="flow-step-text">You get notified and the property status updates automatically.</div></div>
+    </div>
+    <div class="flow-tip"><strong>Tip:</strong> Tip: Prefer more control? Switch to Manual Mode to create and assign cleaning tasks to cleaners whenever needed.</div>
+  </div>
+</div>
+
+<!-- ═══ ISSUES ═══ -->
+<div class="page" id="page-issues">
+  <div class="topbar">
+    <div class="tb-left"><h1>Guest Issues ⚠️</h1><p>3 open · 2 urgent · 1 resolved today</p></div>
+    <div class="tb-right">
+      <select class="f-select"><option>All Properties</option></select>
+      <select class="f-select"><option>All Priorities</option><option>High</option><option>Medium</option><option>Low</option></select>
+      <button class="tb-btn tb-outline" onclick="showToast('🔗 QR code downloaded for all properties!','success')">📲 Download QR Codes</button>
+    </div>
+  </div>
+  <div class="issues-grid">
+    <div class="issue-card"><div class="iss-bar iss-bar-h"></div><div class="iss-header"><div class="iss-cat">🌡️ AC / COOLING</div><span class="iss-pri iss-pri-h">🔴 High</span></div><div class="iss-title">AC not cooling at all</div><div class="iss-desc">Guest says the AC has been running for 2 hours but room temperature is not dropping. Very uncomfortable.</div><div class="iss-footer"><div><div class="iss-prop">🏠 Studio Baga · Vikram Nair</div><div style="font-size:11px;color:var(--s400);margin-top:2px;">1 hr ago · Not assigned</div></div><button class="iss-assign-btn" onclick="showToast('📞 Technician assign screen opened')">Assign →</button></div></div>
+    <div class="issue-card"><div class="iss-bar iss-bar-h"></div><div class="iss-header"><div class="iss-cat">🚿 PLUMBING</div><span class="iss-pri iss-pri-h">🔴 High</span></div><div class="iss-title">Water leaking from tap</div><div class="iss-desc">Constant dripping from hot water tap. Guest says it keeps them awake and water is wasting.</div><div class="iss-footer"><div><div class="iss-prop">🏠 Beach Villa · Arjun Sharma</div><div style="font-size:11px;color:var(--orange);margin-top:2px;font-weight:600;">Raju Plumber assigned ✓</div></div><button class="iss-resolve-btn" onclick="showToast('✅ Issue marked as resolved!','success')">Resolve ✓</button></div></div>
+    <div class="issue-card"><div class="iss-bar iss-bar-m"></div><div class="iss-header"><div class="iss-cat">📶 WIFI</div><span class="iss-pri iss-pri-m">🟡 Medium</span></div><div class="iss-title">WiFi too slow to work</div><div class="iss-desc">Guest working remotely. Says video calls keep dropping. Needs stable connection urgently.</div><div class="iss-footer"><div><div class="iss-prop">🏠 Sunset Villa · Previous Guest</div><div style="font-size:11px;color:var(--s400);margin-top:2px;">Yesterday · Not assigned</div></div><button class="iss-assign-btn" onclick="showToast('📞 Technician assign screen opened')">Assign →</button></div></div>
+  </div>
+  <div style="margin-top:24px;" class="card">
+    <div class="card-hdr"><div class="card-title">How Guest Issue Reporting Works</div></div>
+    <div class="flow-grid flow-grid-three">
+      <div class="flow-step-card"><div style="font-size:36px;margin-bottom:10px;">📲</div><div class="flow-step-title">Guest Scans QR Code</div><div class="flow-step-text">Each property has a unique QR code, and the guest can report without logging in.</div></div>
+      <div class="flow-step-card"><div style="font-size:36px;margin-bottom:10px;">📝</div><div class="flow-step-title">Guest Fills Simple Form</div><div class="flow-step-text">They select a category, add a short description, and can attach a photo.</div></div>
+      <div class="flow-step-card"><div style="font-size:36px;margin-bottom:10px;">🔔</div><div class="flow-step-title">You Get Instant SMS</div><div class="flow-step-text">You get alerted immediately, assign a contact, and the guest receives updates.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SUPPORT CONTACTS ═══ -->
+<div class="page" id="page-contacts">
+  <div class="topbar">
+    <div class="tb-left"><h1>Support Contacts 📞</h1><p>Plumbers, electricians, technicians — all in one place</p></div>
+    <div class="tb-right"><button class="tb-btn tb-fill" onclick="showToast('➕ Add contact form opened')">+ Add Contact</button></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+    <div class="card" style="border-left:4px solid var(--sky)"><div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;"><div style="width:46px;height:46px;border-radius:13px;background:rgba(56,189,248,.12);display:flex;align-items:center;justify-content:center;font-size:22px;">🔧</div><div><div style="font-size:15px;font-weight:700;color:var(--s900);">Raju Plumber</div><div style="font-size:12px;color:var(--s500);">Plumbing · Calangute area</div></div></div><div style="font-size:13px;color:var(--s700);margin-bottom:10px;">📱 +91 98765 43210</div><div style="display:flex;gap:8px;"><button class="cc-btn cc-wa" style="flex:1;padding:9px;" onclick="showToast('💬 Opening WhatsApp for Raju...')">WhatsApp</button><button class="cc-btn cc-view" style="flex:1;padding:9px;" onclick="showToast('📋 Contact details opened')">Details</button></div></div>
+    <div class="card" style="border-left:4px solid var(--orange)"><div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;"><div style="width:46px;height:46px;border-radius:13px;background:rgba(249,115,22,.12);display:flex;align-items:center;justify-content:center;font-size:22px;">⚡</div><div><div style="font-size:15px;font-weight:700;color:var(--s900);">Sunil Electrician</div><div style="font-size:12px;color:var(--s500);">Electrical · All Goa</div></div></div><div style="font-size:13px;color:var(--s700);margin-bottom:10px;">📱 +91 87654 32109</div><div style="display:flex;gap:8px;"><button class="cc-btn cc-wa" style="flex:1;padding:9px;" onclick="showToast('💬 Opening WhatsApp for Sunil...')">WhatsApp</button><button class="cc-btn cc-view" style="flex:1;padding:9px;" onclick="showToast('📋 Contact details opened')">Details</button></div></div>
+    <div class="card" style="border-left:4px solid var(--green)"><div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;"><div style="width:46px;height:46px;border-radius:13px;background:rgba(16,185,129,.12);display:flex;align-items:center;justify-content:center;font-size:22px;">❄️</div><div><div style="font-size:15px;font-weight:700;color:var(--s900);">Cool Tech AC Services</div><div style="font-size:12px;color:var(--s500);">AC Repair · North Goa</div></div></div><div style="font-size:13px;color:var(--s700);margin-bottom:10px;">📱 +91 76543 21098</div><div style="display:flex;gap:8px;"><button class="cc-btn cc-wa" style="flex:1;padding:9px;" onclick="showToast('💬 Opening WhatsApp for Cool Tech...')">WhatsApp</button><button class="cc-btn cc-view" style="flex:1;padding:9px;" onclick="showToast('📋 Contact details opened')">Details</button></div></div>
+  </div>
+</div>
+
+<!-- ═══ FIND CLEANERS NEARBY ═══ -->
+<div class="page" id="page-nearby">
+  <div class="topbar">
+    <div class="tb-left"><h1>Find Cleaners Nearby 📍</h1><p>Browse verified cleaners near your properties</p></div>
+    <div class="tb-right"><select class="f-select"><option>📍 Near Beach Villa, Calangute</option><option>Near Sunset Villa, Anjuna</option><option>Near Studio, Baga</option><option>Near Hilltop, Mapusa</option></select></div>
+  </div>
+  <div class="nearby-filter">
+    <button class="nf-btn active" onclick="filterCleaners(this,'all')">All Cleaners</button>
+    <button class="nf-btn" onclick="filterCleaners(this,'avail')">Available Now</button>
+    <button class="nf-btn" onclick="filterCleaners(this,'4plus')">4★ & above</button>
+    <button class="nf-btn" onclick="filterCleaners(this,'2km')">Within 2 km</button>
+  </div>
+  <div class="nearby-page">
+    <div class="map-wrap">
+      <div class="map-area">
+        <div class="map-grid-svg">
+          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs><pattern id="mgrid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M 32 0 L 0 0 0 32" fill="none" stroke="rgba(56,189,248,0.15)" stroke-width="1"/></pattern></defs>
+            <rect width="100%" height="100%" fill="url(#mgrid)"/>
+            <line x1="0" y1="50%" x2="100%" y2="50%" stroke="rgba(56,189,248,0.1)" stroke-width="2"/>
+            <line x1="30%" y1="0" x2="30%" y2="100%" stroke="rgba(56,189,248,0.1)" stroke-width="2"/>
+            <line x1="70%" y1="0" x2="70%" y2="100%" stroke="rgba(56,189,248,0.1)" stroke-width="2"/>
+            <circle cx="50%" cy="50%" r="80" fill="none" stroke="rgba(249,115,22,0.12)" stroke-width="1" stroke-dasharray="4 4"/>
+            <circle cx="50%" cy="50%" r="140" fill="none" stroke="rgba(249,115,22,0.08)" stroke-width="1" stroke-dasharray="4 4"/>
+          </svg>
+        </div>
+        <input class="map-search-input" placeholder="🔍 Search area or locality..." style="position:absolute;top:14px;left:50%;transform:translateX(-50%);width:82%;z-index:5;"/>
+        <div class="map-cleaner-pin" data-cleaner="ramesh" style="top:24%;left:20%;" onclick="highlightCleaner('ramesh')"><div class="mcp-dot" style="background:#10B981"></div><div class="mcp-lbl" style="background:rgba(16,185,129,.9)">Ramesh ★4.8</div></div>
+        <div class="map-cleaner-pin" data-cleaner="anita" style="top:38%;left:68%;" onclick="highlightCleaner('anita')"><div class="mcp-dot" style="background:#10B981"></div><div class="mcp-lbl" style="background:rgba(16,185,129,.9)">Anita ★4.6</div></div>
+        <div class="map-cleaner-pin" data-cleaner="priya" style="top:60%;left:35%;" onclick="highlightCleaner('priya')"><div class="mcp-dot" style="background:#F59E0B"></div><div class="mcp-lbl" style="background:rgba(245,158,11,.9)">Priya ★4.3</div></div>
+        <div class="map-cleaner-pin" data-cleaner="suresh" style="top:18%;left:55%;" onclick="highlightCleaner('suresh')"><div class="mcp-dot" style="background:#10B981"></div><div class="mcp-lbl" style="background:rgba(16,185,129,.9)">Suresh ★4.1</div></div>
+        <div class="map-cleaner-pin" data-cleaner="kavita" style="top:70%;left:75%;" onclick="highlightCleaner('kavita')"><div class="mcp-dot" style="background:#EF4444"></div><div class="mcp-lbl" style="background:rgba(239,68,68,.9)">Kavita ★3.8</div></div>
+        <div class="map-you-marker"><div class="map-you-pin"></div><div class="map-you-lbl">📍 Beach Villa</div></div>
+      </div>
+      <div class="map-legend">
+        <div class="ml-item"><div class="ml-dot" style="background:#10B981"></div>Available</div>
+        <div class="ml-item"><div class="ml-dot" style="background:#F59E0B"></div>On Task</div>
+        <div class="ml-item"><div class="ml-dot" style="background:#EF4444"></div>Unavailable</div>
+        <div class="ml-item"><div class="ml-dot" style="background:var(--orange)"></div>Your Property</div>
+      </div>
+    </div>
+    <div class="cleaners-list" id="cleaners-list">
+      <div class="cleaner-card" id="cc-ramesh" data-cleaner="ramesh" data-status="avail" data-rating="4.8" data-distance="1.2"><div class="cc-top"><div class="cc-avatar" style="background:linear-gradient(135deg,var(--sky),var(--sky-dark))">R</div><div><div class="cc-name">Ramesh Kumar</div><div class="cc-dist">📍 1.2 km away · Calangute</div></div><span class="cc-status cc-avail">● Available</span></div><div><span class="cc-stars">★★★★★</span><span class="cc-rating-num">4.8 · 42 ratings</span></div><div class="cc-stats"><div class="cc-stat"><div class="cc-stat-val">42</div><div class="cc-stat-lbl">Tasks Done</div></div><div class="cc-stat"><div class="cc-stat-val">55m</div><div class="cc-stat-lbl">Avg Time</div></div><div class="cc-stat"><div class="cc-stat-val">92%</div><div class="cc-stat-lbl">On-Time</div></div></div><div class="cc-bar-wrap"><div class="cc-bar-lbl"><span>On-Time Rate</span><span>92%</span></div><div class="cc-bar-track"><div class="cc-bar-fill" style="width:92%;background:linear-gradient(90deg,var(--green),#059669)"></div></div></div><div class="cc-actions"><button class="cc-btn cc-wa" onclick="showToast('💬 Opening WhatsApp for Ramesh Kumar...','success')">💬 WhatsApp</button><button class="cc-btn cc-hire" onclick="showToast('✅ Ramesh Kumar hired for next task!','success')">Hire Now</button></div></div>
+      <div class="cleaner-card" id="cc-anita" data-cleaner="anita" data-status="avail" data-rating="4.6" data-distance="2.4"><div class="cc-top"><div class="cc-avatar" style="background:linear-gradient(135deg,#10B981,#059669)">A</div><div><div class="cc-name">Anita Desai</div><div class="cc-dist">📍 2.4 km away · Candolim</div></div><span class="cc-status cc-avail">● Available</span></div><div><span class="cc-stars">★★★★½</span><span class="cc-rating-num">4.6 · 31 ratings</span></div><div class="cc-stats"><div class="cc-stat"><div class="cc-stat-val">31</div><div class="cc-stat-lbl">Tasks Done</div></div><div class="cc-stat"><div class="cc-stat-val">60m</div><div class="cc-stat-lbl">Avg Time</div></div><div class="cc-stat"><div class="cc-stat-val">88%</div><div class="cc-stat-lbl">On-Time</div></div></div><div class="cc-bar-wrap"><div class="cc-bar-lbl"><span>On-Time Rate</span><span>88%</span></div><div class="cc-bar-track"><div class="cc-bar-fill" style="width:88%;background:linear-gradient(90deg,var(--green),#059669)"></div></div></div><div class="cc-actions"><button class="cc-btn cc-wa" onclick="showToast('💬 Opening WhatsApp for Anita Desai...','success')">💬 WhatsApp</button><button class="cc-btn cc-hire" onclick="showToast('✅ Anita Desai hired for next task!','success')">Hire Now</button></div></div>
+      <div class="cleaner-card" id="cc-priya" data-cleaner="priya" data-status="busy" data-rating="4.3" data-distance="3.1"><div class="cc-top"><div class="cc-avatar" style="background:linear-gradient(135deg,#F97316,#EA580C)">P</div><div><div class="cc-name">Priya Sharma</div><div class="cc-dist">📍 3.1 km away · Anjuna</div></div><span class="cc-status cc-busy">● On Task</span></div><div><span class="cc-stars">★★★★</span><span class="cc-rating-num">4.3 · 28 ratings</span></div><div class="cc-stats"><div class="cc-stat"><div class="cc-stat-val">28</div><div class="cc-stat-lbl">Tasks Done</div></div><div class="cc-stat"><div class="cc-stat-val">63m</div><div class="cc-stat-lbl">Avg Time</div></div><div class="cc-stat"><div class="cc-stat-val">85%</div><div class="cc-stat-lbl">On-Time</div></div></div><div class="cc-bar-wrap"><div class="cc-bar-lbl"><span>On-Time Rate</span><span>85%</span></div><div class="cc-bar-track"><div class="cc-bar-fill" style="width:85%;background:linear-gradient(90deg,var(--amber),var(--yellow))"></div></div></div><div class="cc-actions"><button class="cc-btn cc-wa" onclick="showToast('💬 Opening WhatsApp for Priya Sharma...','success')">💬 WhatsApp</button><button class="cc-btn cc-view" onclick="showToast('📋 Priya Sharma profile opened')">View Profile</button></div></div>
+      <div class="cleaner-card" id="cc-suresh" data-cleaner="suresh" data-status="avail" data-rating="4.1" data-distance="1.8"><div class="cc-top"><div class="cc-avatar" style="background:linear-gradient(135deg,#0EA5E9,#0284C7)">S</div><div><div class="cc-name">Suresh Babu</div><div class="cc-dist">📍 1.8 km away · Baga</div></div><span class="cc-status cc-avail">● Available</span></div><div><span class="cc-stars">★★★★</span><span class="cc-rating-num">4.1 · 19 ratings</span></div><div class="cc-stats"><div class="cc-stat"><div class="cc-stat-val">19</div><div class="cc-stat-lbl">Tasks Done</div></div><div class="cc-stat"><div class="cc-stat-val">71m</div><div class="cc-stat-lbl">Avg Time</div></div><div class="cc-stat"><div class="cc-stat-val">74%</div><div class="cc-stat-lbl">On-Time</div></div></div><div class="cc-bar-wrap"><div class="cc-bar-lbl"><span>On-Time Rate</span><span>74%</span></div><div class="cc-bar-track"><div class="cc-bar-fill" style="width:74%;background:linear-gradient(90deg,var(--green),#059669)"></div></div></div><div class="cc-actions"><button class="cc-btn cc-wa" onclick="showToast('💬 Opening WhatsApp for Suresh Babu...','success')">💬 WhatsApp</button><button class="cc-btn cc-hire" onclick="showToast('✅ Suresh Babu hired for next task!','success')">Hire Now</button></div></div>
+      <div class="cleaner-card" id="cc-kavita" data-cleaner="kavita" data-status="busy" data-rating="3.8" data-distance="2.0"><div class="cc-top"><div class="cc-avatar" style="background:linear-gradient(135deg,#EF4444,#DC2626)">K</div><div><div class="cc-name">Kavita Naik</div><div class="cc-dist">📍 2.0 km away · Calangute</div></div><span class="cc-status cc-busy">● Unavailable</span></div><div><span class="cc-stars">★★★½</span><span class="cc-rating-num">3.8 · 11 ratings</span></div><div class="cc-stats"><div class="cc-stat"><div class="cc-stat-val">11</div><div class="cc-stat-lbl">Tasks Done</div></div><div class="cc-stat"><div class="cc-stat-val">79m</div><div class="cc-stat-lbl">Avg Time</div></div><div class="cc-stat"><div class="cc-stat-val">68%</div><div class="cc-stat-lbl">On-Time</div></div></div><div class="cc-bar-wrap"><div class="cc-bar-lbl"><span>On-Time Rate</span><span>68%</span></div><div class="cc-bar-track"><div class="cc-bar-fill" style="width:68%;background:linear-gradient(90deg,var(--red),#DC2626)"></div></div></div><div class="cc-actions"><button class="cc-btn cc-view" onclick="showToast('📋 Kavita Naik profile opened')">View Profile</button><button class="cc-btn cc-hire" onclick="showToast('Kavita Naik is currently unavailable','warning')">Request Slot</button></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CLEANER PERFORMANCE ═══ -->
+<div class="page" id="page-performance">
+  <div class="topbar">
+    <div class="tb-left"><h1>Cleaner Performance ⭐</h1><p>Track, rate and manage your cleaning team</p></div>
+    <div class="tb-right"><select class="f-select"><option>This Month</option><option>Last Month</option><option>All Time</option></select><button class="tb-btn tb-fill" onclick="showToast('➕ Add cleaner form opened')">+ Add Cleaner</button></div>
+  </div>
+  <div class="perf-grid">
+    <div class="perf-card"><div class="pc-top"><div class="pc-av" style="background:linear-gradient(135deg,var(--sky),var(--sky-dark))">R</div><div><div class="pc-name">Ramesh Kumar</div><span class="pc-status pc-avail">● Available</span></div></div><div><span class="pc-stars">★★★★★</span><span class="pc-rating-n">4.8 · 42 ratings</span></div><div class="pc-stats"><div class="pc-stat"><div class="pc-stat-val">42</div><div class="pc-stat-lbl">Tasks Done</div></div><div class="pc-stat"><div class="pc-stat-val">55m</div><div class="pc-stat-lbl">Avg Time</div></div><div class="pc-stat"><div class="pc-stat-val">28m</div><div class="pc-stat-lbl">Fastest</div></div><div class="pc-stat"><div class="pc-stat-val">2h10m</div><div class="pc-stat-lbl">Slowest</div></div></div><div class="pc-bar-wrap"><div class="pc-bar-lbl"><span>On-Time Rate</span><span>92%</span></div><div class="pc-bar-track"><div class="pc-bar-fill pc-bar-green" style="width:92%"></div></div></div><div class="pc-bar-wrap"><div class="pc-bar-lbl"><span>Tasks This Month</span><span>8/10</span></div><div class="pc-bar-track"><div class="pc-bar-fill pc-bar-sky" style="width:80%"></div></div></div><div class="pc-actions"><button class="pc-btn pc-btn-rate" onclick="showToast('⭐ Rating modal opened for Ramesh')">⭐ Rate</button><button class="pc-btn pc-btn-view" onclick="showToast('📋 Full history for Ramesh opened')">View History</button></div></div>
+    <div class="perf-card"><div class="pc-top"><div class="pc-av" style="background:linear-gradient(135deg,#10B981,#059669)">P</div><div><div class="pc-name">Priya Sharma</div><span class="pc-status pc-ontask">● On Task</span></div></div><div><span class="pc-stars">★★★★</span><span class="pc-rating-n">4.3 · 28 ratings</span></div><div class="pc-stats"><div class="pc-stat"><div class="pc-stat-val">28</div><div class="pc-stat-lbl">Tasks Done</div></div><div class="pc-stat"><div class="pc-stat-val">62m</div><div class="pc-stat-lbl">Avg Time</div></div><div class="pc-stat"><div class="pc-stat-val">35m</div><div class="pc-stat-lbl">Fastest</div></div><div class="pc-stat"><div class="pc-stat-val">1h45m</div><div class="pc-stat-lbl">Slowest</div></div></div><div class="pc-bar-wrap"><div class="pc-bar-lbl"><span>On-Time Rate</span><span>87%</span></div><div class="pc-bar-track"><div class="pc-bar-fill pc-bar-green" style="width:87%"></div></div></div><div class="pc-bar-wrap"><div class="pc-bar-lbl"><span>Tasks This Month</span><span>5/10</span></div><div class="pc-bar-track"><div class="pc-bar-fill pc-bar-sky" style="width:50%"></div></div></div><div class="pc-actions"><button class="pc-btn pc-btn-rate" onclick="showToast('⭐ Rating modal opened for Priya')">⭐ Rate</button><button class="pc-btn pc-btn-view" onclick="showToast('📋 Full history for Priya opened')">View History</button></div></div>
+    <div class="perf-card"><div class="pc-top"><div class="pc-av" style="background:linear-gradient(135deg,#F97316,#EA580C)">S</div><div><div class="pc-name">Suresh Babu</div><span class="pc-status pc-avail">● Available</span></div></div><div><span class="pc-stars">★★★★</span><span class="pc-rating-n">4.1 · 19 ratings</span></div><div class="pc-stats"><div class="pc-stat"><div class="pc-stat-val">19</div><div class="pc-stat-lbl">Tasks Done</div></div><div class="pc-stat"><div class="pc-stat-val">71m</div><div class="pc-stat-lbl">Avg Time</div></div><div class="pc-stat"><div class="pc-stat-val">44m</div><div class="pc-stat-lbl">Fastest</div></div><div class="pc-stat"><div class="pc-stat-val">2h30m</div><div class="pc-stat-lbl">Slowest</div></div></div><div class="pc-bar-wrap"><div class="pc-bar-lbl"><span>On-Time Rate</span><span>74%</span></div><div class="pc-bar-track"><div class="pc-bar-fill pc-bar-green" style="width:74%"></div></div></div><div class="pc-bar-wrap"><div class="pc-bar-lbl"><span>Tasks This Month</span><span>3/10</span></div><div class="pc-bar-track"><div class="pc-bar-fill pc-bar-sky" style="width:30%"></div></div></div><div class="pc-actions"><button class="pc-btn pc-btn-rate" onclick="showToast('⭐ Rating modal opened for Suresh')">⭐ Rate</button><button class="pc-btn pc-btn-view" onclick="showToast('📋 Full history for Suresh opened')">View History</button></div></div>
+  </div>
+</div>
+
+<!-- ═══ ANALYTICS ═══ -->
+<div class="page" id="page-analytics">
+  <div class="topbar"><div class="tb-left"><h1>Analytics 📊</h1><p>Revenue and performance overview</p></div><div class="tb-right"><select class="f-select"><option>March 2026</option><option>February 2026</option><option>Last 3 months</option></select><button class="tb-btn tb-outline" onclick="showToast('📤 Exporting analytics report...','success')">Export PDF</button></div></div>
+  <div class="stats-grid" style="margin-bottom:20px;">
+    <div class="stat-card sc-purple"><div class="sc-icon">💰</div><div class="sc-val">₹84k</div><div class="sc-lbl">Total Revenue (Mar)</div><div class="sc-change sc-up">↑ 18% vs Feb</div></div>
+    <div class="stat-card sc-blue"><div class="sc-icon">📅</div><div class="sc-val">14</div><div class="sc-lbl">Total Bookings</div><div class="sc-change sc-up">↑ 3 vs last</div></div>
+    <div class="stat-card sc-green"><div class="sc-icon">📈</div><div class="sc-val">63%</div><div class="sc-lbl">Avg Occupancy</div><div class="sc-change sc-up">↑ 8% vs last</div></div>
+    <div class="stat-card sc-orange"><div class="sc-icon">⭐</div><div class="sc-val">4.7</div><div class="sc-lbl">Avg Guest Rating</div><div class="sc-change sc-up">↑ 0.2 pts</div></div>
+    <div class="stat-card sc-yellow"><div class="sc-icon">🧹</div><div class="sc-val">18</div><div class="sc-lbl">Cleaning Tasks</div><div class="sc-change sc-up">100% completed</div></div>
+    <div class="stat-card sc-red"><div class="sc-icon">⚠️</div><div class="sc-val">5</div><div class="sc-lbl">Issues Resolved</div><div class="sc-change sc-up">Avg 2.3 hrs</div></div>
+  </div>
+  <div class="analytics-grid">
+    <div class="chart-card">
+      <div class="card-hdr"><div class="card-title">Monthly Revenue (₹)</div></div>
+      <div class="chart-bars">
+        <div class="chart-bar-wrap"><div class="chart-bar-val">₹52k</div><div class="chart-bar" style="height:58%;background:linear-gradient(to top,var(--sky-dark),var(--sky))"></div><div class="chart-bar-lbl">Oct</div></div>
+        <div class="chart-bar-wrap"><div class="chart-bar-val">₹61k</div><div class="chart-bar" style="height:68%;background:linear-gradient(to top,var(--sky-dark),var(--sky))"></div><div class="chart-bar-lbl">Nov</div></div>
+        <div class="chart-bar-wrap"><div class="chart-bar-val">₹78k</div><div class="chart-bar" style="height:86%;background:linear-gradient(to top,var(--sky-dark),var(--sky))"></div><div class="chart-bar-lbl">Dec</div></div>
+        <div class="chart-bar-wrap"><div class="chart-bar-val">₹43k</div><div class="chart-bar" style="height:48%;background:linear-gradient(to top,var(--sky-dark),var(--sky))"></div><div class="chart-bar-lbl">Jan</div></div>
+        <div class="chart-bar-wrap"><div class="chart-bar-val">₹71k</div><div class="chart-bar" style="height:79%;background:linear-gradient(to top,var(--sky-dark),var(--sky))"></div><div class="chart-bar-lbl">Feb</div></div>
+        <div class="chart-bar-wrap"><div class="chart-bar-val">₹84k</div><div class="chart-bar" style="height:100%;background:linear-gradient(to top,var(--orange-dark),var(--orange))"></div><div class="chart-bar-lbl">Mar ✨</div></div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="card-hdr"><div class="card-title">Occupancy by Property</div></div>
+      <div class="occ-chart">
+        <div class="occ-row"><div class="occ-prop">Beach Villa</div><div class="occ-bar-track"><div class="occ-bar-fill" style="width:74%"></div></div><div class="occ-val">74%</div></div>
+        <div class="occ-row"><div class="occ-prop">Sunset Villa</div><div class="occ-bar-track"><div class="occ-bar-fill" style="width:61%"></div></div><div class="occ-val">61%</div></div>
+        <div class="occ-row"><div class="occ-prop">Studio Baga</div><div class="occ-bar-track"><div class="occ-bar-fill" style="width:55%"></div></div><div class="occ-val">55%</div></div>
+        <div class="occ-row"><div class="occ-prop">Hilltop Cottage</div><div class="occ-bar-track"><div class="occ-bar-fill" style="width:32%"></div></div><div class="occ-val">32%</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SETTINGS ═══ -->
+<div class="page" id="page-settings">
+  <div class="topbar"><div class="tb-left"><h1>Settings ⚙️</h1><p>Manage your account and preferences</p></div></div>
+  <div class="settings-grid">
+    <div class="settings-nav">
+      <div class="sn-item active" onclick="activateSettingTab(this)">👤 Profile</div>
+      <div class="sn-item" onclick="activateSettingTab(this)">🔔 Notifications</div>
+      <div class="sn-item" onclick="activateSettingTab(this)">🔄 iCal Sync</div>
+      <div class="sn-item" onclick="activateSettingTab(this)">💳 Billing</div>
+      <div class="sn-item" onclick="activateSettingTab(this)">👥 Team</div>
+    </div>
+    <div class="settings-content">
+      <div class="settings-section">
+        <h3>Profile Information</h3>
+        <p>Update your host profile and contact information.</p>
+        <div class="form-row"><div class="form-group"><label class="form-label">Full Name</label><input class="form-input" value="Rahul Mehta"/></div><div class="form-group"><label class="form-label">WhatsApp Number</label><input class="form-input" value="+91 98765 43210"/></div></div>
+        <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" value="rahul@example.com"/></div>
+        <div class="form-row"><div class="form-group"><label class="form-label">City</label><input class="form-input" value="Goa"/></div><div class="form-group"><label class="form-label">Language</label><select class="form-select"><option>English</option><option>Hindi</option></select></div></div>
+        <button class="save-btn" onclick="showToast('✅ Profile saved successfully!','success')">Save Changes</button>
+      </div>
+      <div class="settings-section">
+        <h3>Notifications</h3>
+        <p>Choose how and when you want to be notified.</p>
+        <div class="setting-row"><div><div class="setting-label">New Booking Synced</div><div class="setting-desc">Get notified when a new booking syncs from Airbnb</div></div><div class="toggle on" onclick="toggleSwitch(this)"></div></div>
+        <div class="setting-row"><div><div class="setting-label">Guest Checkout Today</div><div class="setting-desc">Morning reminder for checkouts happening today</div></div><div class="toggle on" onclick="toggleSwitch(this)"></div></div>
+        <div class="setting-row"><div><div class="setting-label">Cleaning Task Completed</div><div class="setting-desc">When a cleaner marks a task as done</div></div><div class="toggle on" onclick="toggleSwitch(this)"></div></div>
+        <div class="setting-row"><div><div class="setting-label">Guest Issue Reported</div><div class="setting-desc">Immediate SMS when a guest submits an issue</div></div><div class="toggle on" onclick="toggleSwitch(this)"></div></div>
+        <div class="setting-row"><div><div class="setting-label">iCal Sync Failed</div><div class="setting-desc">Alert if sync fails 3 times in a row</div></div><div class="toggle on" onclick="toggleSwitch(this)"></div></div>
+        <div class="setting-row"><div><div class="setting-label">WhatsApp Notifications</div><div class="setting-desc">Receive key alerts on WhatsApp</div></div><div class="toggle on" onclick="toggleSwitch(this)"></div></div>
+        <button class="save-btn" style="margin-top:16px;" onclick="showToast('✅ Notification settings saved!','success')">Save Preferences</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="app-footer">
+  <div class="app-footer-brand"><span>✈</span>Airly Demo Experience</div>
+  <div class="app-footer-copy">© 2026 Airly. Built by<strong> Saiteja Gunishetti.</strong></div>
+</footer>
+
+</main>
+</div>
+
+<!-- ═══ MODALS ═══ -->
+
+<!-- ADD PROPERTY MODAL -->
+<div class="modal-overlay" id="modal-add-prop">
+  <div class="modal">
+    <h2>🏠 Add New Property</h2>
+    <p>Fill in your property details and paste your Airbnb iCal URL to start syncing bookings automatically.</p>
+    <div class="form-group"><label class="form-label">Property Name</label><input class="form-input" placeholder="e.g. Beach Villa Calangute"/></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">City</label><input class="form-input" placeholder="e.g. Goa"/></div>
+      <div class="form-group"><label class="form-label">Bedrooms</label><select class="form-select"><option>Studio</option><option>1 BR</option><option>2 BR</option><option>3 BR</option><option>4 BR</option><option>5+ BR</option></select></div>
+    </div>
+    <div class="form-group"><label class="form-label">Full Address</label><input class="form-input" placeholder="Street, Area, City, State"/></div>
+    <div class="form-group"><label class="form-label">Airbnb iCal URL</label><input class="form-input" placeholder="https://www.airbnb.com/calendar/ical/..."/><div class="ical-hint" onclick="showToast('📋 How to find your iCal URL guide opened')">📋 How to find your Airbnb iCal URL →</div></div>
+    <div class="form-group"><label class="form-label">Also sync from (optional)</label>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;">
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;"><input type="checkbox" style="accent-color:var(--sky-dark)"/> Booking.com</label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;"><input type="checkbox" style="accent-color:var(--sky-dark)"/> VRBO</label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;"><input type="checkbox" style="accent-color:var(--sky-dark)"/> Google Calendar</label>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Property Photos</label>
+      <div class="img-grid"><div class="img-slot" onclick="showToast('📸 Photo upload opened')">📷</div><div class="img-slot" onclick="showToast('📸 Photo upload opened')">📷</div><div class="img-slot" onclick="showToast('📸 Photo upload opened')">📷</div><div class="img-slot" onclick="showToast('📸 Photo upload opened')">📷</div></div>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeModal('modal-add-prop')">Cancel</button>
+      <button class="modal-submit" onclick="addProperty()">Add Property & Start Sync ✈</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD MANUAL BOOKING MODAL -->
+<div class="modal-overlay" id="modal-add-booking">
+  <div class="modal">
+    <h2>📅 Add Manual Booking</h2>
+    <p>For walk-in, WhatsApp, or phone bookings that aren't on Airbnb.</p>
+    <div class="mb-form">
+      <div class="mb-form-row">
+        <div class="form-group"><label class="form-label">Guest Name</label><input class="form-input" placeholder="Full name"/></div>
+        <div class="form-group"><label class="form-label">Phone / WhatsApp</label><input class="form-input" placeholder="+91 XXXXX XXXXX"/></div>
+      </div>
+      <div class="form-group"><label class="form-label">Property</label><select class="form-select"><option>Beach Villa Calangute</option><option>Sunset Villa Anjuna</option><option>Studio Apartment Baga</option><option>Hilltop Cottage Mapusa</option></select></div>
+      <div class="mb-form-row">
+        <div class="form-group"><label class="form-label">Check-in Date</label><input class="form-input" type="date"/></div>
+        <div class="form-group"><label class="form-label">Check-out Date</label><input class="form-input" type="date"/></div>
+      </div>
+      <div class="mb-form-row">
+        <div class="form-group"><label class="form-label">Booking Source</label><select class="form-select"><option>WhatsApp</option><option>Phone Call</option><option>Walk-in</option><option>Other</option></select></div>
+        <div class="form-group"><label class="form-label">Total Amount (₹)</label><input class="form-input" placeholder="e.g. 12000"/></div>
+      </div>
+      <div class="form-group"><label class="form-label">Notes (optional)</label><input class="form-input" placeholder="Any special requests or notes..."/></div>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeModal('modal-add-booking')">Cancel</button>
+      <button class="modal-submit" onclick="addBooking()">Add Booking ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script src="js/script.js"></script>
+</body>
+</html>
